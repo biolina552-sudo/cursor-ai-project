@@ -16,7 +16,7 @@ model-specific inputs from the command line.
 ## Installation
 
 ```bash
-python -m pip install -e .
+python3 -m pip install -e .
 ```
 
 ## Usage
@@ -61,5 +61,5 @@ ai-video generate "A robot gardener watering flowers" \
 Run the test suite:
 
 ```bash
-python -m unittest discover -s tests
+PYTHONPATH=src python3 -m unittest discover -s tests
 ```
