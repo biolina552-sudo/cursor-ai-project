@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Video Studio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">Local demo generator</p>
+        <h1>AI Video Studio</h1>
+        <p class="lede">
+          Enter a product description and generate a real MP4 locally. No Replicate,
+          D-ID, or external AI API is required.
+        </p>
+      </section>
+
+      <section class="workspace" aria-label="Video generator">
+        <form id="generate-form" class="panel">
+          <label for="description">Product description</label>
+          <textarea
+            id="description"
+            name="description"
+            rows="8"
+            maxlength="1200"
+            placeholder="Example: A lightweight travel mug that keeps coffee hot for 12 hours and fits in every cup holder."
+            required
+          ></textarea>
+          <div class="actions">
+            <button id="generate-button" type="submit">Generate video</button>
+            <span id="status" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+
+        <section class="panel preview-panel">
+          <div class="preview-header">
+            <div>
+              <p class="eyebrow">Preview</p>
+              <h2>Your generated video</h2>
+            </div>
+            <a id="download-link" class="download-link hidden" href="#" download>Download MP4</a>
+          </div>
+
+          <div id="empty-preview" class="empty-preview">
+            Your locally generated MP4 will appear here.
+          </div>
+          <video id="video-preview" class="hidden" controls playsinline></video>
+        </section>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>
