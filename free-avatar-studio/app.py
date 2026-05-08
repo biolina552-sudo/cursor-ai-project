@@ -109,7 +109,7 @@ def gradient_background(width, height):
             local = (ratio - 0.55) / 0.45
             color = middle * (1 - local) + bottom * local
         rows[y, :, :] = color
-    return Image.fromarray(rows, "RGB")
+    return Image.fromarray(rows)
 
 
 def draw_panel(base, box, radius=34):
