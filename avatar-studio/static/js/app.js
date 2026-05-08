@@ -153,6 +153,8 @@ function generateScript() {
 
 function setLoading(isLoading, message) {
     loadingOverlay.hidden = !isLoading;
+    loadingOverlay.classList.toggle("is-visible", isLoading);
+    loadingOverlay.setAttribute("aria-hidden", String(!isLoading));
     loadingText.textContent = message || "تم إرسال الطلب إلى D-ID. ننتظر تجهيز الفيديو.";
 }
 
@@ -296,5 +298,6 @@ document.querySelectorAll("input[name='language']").forEach((input) => {
     input.addEventListener("change", updateReview);
 });
 
+setLoading(false, "");
 updateDuration();
 updateProgress();

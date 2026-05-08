@@ -732,11 +732,15 @@ input[type="range"] {
     position: fixed;
     z-index: 20;
     inset: 0;
-    display: grid;
+    display: none;
     place-items: center;
     padding: 24px;
     background: rgba(4, 2, 10, 0.78);
     backdrop-filter: blur(14px);
+}
+
+.loading-overlay.is-visible {
+    display: grid;
 }
 
 .loader-card {
