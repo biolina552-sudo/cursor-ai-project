@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Free Avatar Studio | أداة فيديوهات الإعلانات المجانية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="hero-card">
+            <div class="hero-copy">
+                <span class="eyebrow">100% Free • No Paid APIs</span>
+                <h1>Free Avatar Studio</h1>
+                <p>أنشئ فيديو إعلان احترافي بصورة أفاتار وصورة منتج وصوت عربي أو إنجليزي أو فرنسي باستخدام gTTS و MoviePy فقط.</p>
+            </div>
+            <div class="hero-badge">
+                <strong>MP4</strong>
+                <span>Ready to download</span>
+            </div>
+        </section>
+
+        <form id="studioForm" class="studio-layout">
+            <aside class="steps-panel" aria-label="خطوات إنشاء الفيديو">
+                <button class="step-pill active" type="button" data-step="0"><span>1</span> المنتج</button>
+                <button class="step-pill" type="button" data-step="1"><span>2</span> السكربت</button>
+                <button class="step-pill" type="button" data-step="2"><span>3</span> الأفاتار</button>
+                <button class="step-pill" type="button" data-step="3"><span>4</span> اللغة</button>
+                <button class="step-pill" type="button" data-step="4"><span>5</span> المدة</button>
+                <button class="step-pill" type="button" data-step="5"><span>6</span> التوليد</button>
+            </aside>
+
+            <section class="wizard-card">
+                <div class="progress-track">
+                    <div id="progressFill"></div>
+                </div>
+
+                <article class="wizard-step active" data-step-panel="0">
+                    <div class="step-heading">
+                        <span>الخطوة 1</span>
+                        <h2>ارفع صورة المنتج</h2>
+                        <p>اختر صورة واضحة للمنتج واكتب اسمه ليظهر في الشريط السفلي المتحرك.</p>
+                    </div>
+                    <label class="field-label" for="productName">اسم المنتج</label>
+                    <input id="productName" name="product_name" class="text-input" type="text" maxlength="80" placeholder="مثال: عطر المساء الذهبي">
+
+                    <label class="upload-zone" for="productImage">
+                        <input id="productImage" name="product_image" type="file" accept="image/png,image/jpeg,image/webp" required>
+                        <span class="upload-icon">⬆</span>
+                        <strong>اضغط لاختيار صورة المنتج</strong>
+                        <small>PNG / JPG / WEBP حتى 16MB</small>
+                    </label>
+                    <img id="productPreview" class="image-preview hidden" alt="معاينة صورة المنتج">
+                </article>
+
+                <article class="wizard-step" data-step-panel="1">
+                    <div class="step-heading">
+                        <span>الخطوة 2</span>
+                        <h2>اكتب سكربت الإعلان</h2>
+                        <p>اكتب النص بالعربية أو الإنجليزية أو الفرنسية. سيتم قص النص تلقائياً حسب مدة الفيديو المختارة.</p>
+                    </div>
+                    <textarea id="script" name="script" class="script-input" required placeholder="اكتب هنا: اكتشفوا منتجنا الجديد بجودة عالية وسعر مميز..."></textarea>
+                    <div class="helper-row">
+                        <button class="ghost-button" id="sampleArabic" type="button">نموذج عربي</button>
+                        <button class="ghost-button" id="sampleEnglish" type="button">English sample</button>
+                        <span id="wordCount">0 كلمة</span>
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="2">
+                    <div class="step-heading">
+                        <span>الخطوة 3</span>
+                        <h2>اختر مقدم الإعلان</h2>
+                        <p>8 صور أفاتار مرفقة: 4 عربية الطابع و 4 دولية.</p>
+                    </div>
+                    <div class="avatar-grid">
+                        {% for avatar in avatars %}
+                        <label class="avatar-card">
+                            <input type="radio" name="avatar" value="{{ avatar.id }}" {% if loop.first %}checked{% endif %}>
+                            <img src="{{ url_for('static', filename='avatars/' ~ avatar.file) }}" alt="{{ avatar.name }}">
+                            <span>{{ avatar.label_ar }}</span>
+                            <small>{{ avatar.name }}</small>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="3">
+                    <div class="step-heading">
+                        <span>الخطوة 4</span>
+                        <h2>حدد لغة الصوت</h2>
+                        <p>يستخدم التطبيق gTTS المجاني لإنشاء ملف صوتي من النص بدون أي مفاتيح API مدفوعة.</p>
+                    </div>
+                    <div class="option-grid three">
+                        <label class="option-card">
+                            <input type="radio" name="language" value="ar" checked>
+                            <strong>العربية</strong>
+                            <span>صوت عربي للإعلانات المحلية</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="language" value="en">
+                            <strong>English</strong>
+                            <span>International ad voice</span>
+                        </label>
+                        <label class="option-card">
+                            <input type="radio" name="language" value="fr">
+                            <strong>Français</strong>
+                            <span>Voix publicitaire française</span>
+                        </label>
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="4">
+                    <div class="step-heading">
+                        <span>الخطوة 5</span>
+                        <h2>اختر مدة الفيديو</h2>
+                        <p>المدة بين 15 و 40 ثانية، وتتحكم أيضاً في مقدار النص الذي ستتم قراءته.</p>
+                    </div>
+                    <div class="duration-card">
+                        <input id="duration" name="duration" type="range" min="15" max="40" value="25">
+                        <div class="duration-value"><span id="durationValue">25</span> ثانية</div>
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="5">
+                    <div class="step-heading">
+                        <span>الخطوة 6</span>
+                        <h2>ولّد الفيديو وحمّله</h2>
+                        <p>سيتم إنشاء MP4 بخلفية بنفسجية داكنة، صورة الأفاتار، صورة المنتج، شريط نص متحرك، وصوت السكربت.</p>
+                    </div>
+                    <button id="generateButton" class="generate-button" type="submit">
+                        <span class="button-label">Generate MP4 Video</span>
+                        <span class="spinner hidden"></span>
+                    </button>
+                    <div id="statusBox" class="status-box hidden" role="status"></div>
+                    <div id="resultPanel" class="result-panel hidden">
+                        <video id="resultVideo" controls playsinline></video>
+                        <a id="downloadLink" class="download-button" href="#" download>Download MP4</a>
+                        <p id="trimmedScript"></p>
+                    </div>
+                </article>
+
+                <div class="wizard-actions">
+                    <button id="prevStep" class="secondary-button" type="button">السابق</button>
+                    <button id="nextStep" class="primary-button" type="button">التالي</button>
+                </div>
+            </section>
+        </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
