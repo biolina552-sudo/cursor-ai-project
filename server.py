@@ -147,6 +147,10 @@ class AppHandler(BaseHTTPRequestHandler):
 
         self.serve_static(parsed_path.path)
 
+    def do_HEAD(self) -> None:
+        parsed_path = urllib.parse.urlparse(self.path)
+        self.serve_static(parsed_path.path, head_only=True)
+
     def do_POST(self) -> None:
         if self.path == "/api/generate-video":
             self.handle_generate_video()
@@ -265,7 +269,7 @@ class AppHandler(BaseHTTPRequestHandler):
             }
         )
 
-    def serve_static(self, path: str) -> None:
+    def serve_static(self, path: str, head_only: bool = False) -> None:
         clean_path = "index.html" if path in ("", "/") else path.lstrip("/")
         file_path = (ROOT / clean_path).resolve()
 
@@ -289,7 +293,8 @@ class AppHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.end_headers()
-        self.wfile.write(content)
+        if not head_only:
+            self.wfile.write(content)
 
     def write_json(self, payload: dict[str, Any], status: int = 200) -> None:
         content = json.dumps(payload, ensure_ascii=False).encode("utf-8")
