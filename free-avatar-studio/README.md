@@ -4,7 +4,7 @@ A fully free Flask tool for creating avatar-style advertising videos with no pai
 
 ## What it does
 
-- Upload a product image.
+- Upload a product image, paste a product image URL, or leave the image blank to use a generated placeholder.
 - Write an Arabic, English, or French product script.
 - Select one of 8 bundled avatar presenter photos.
 - Choose a 15-40 second duration.
@@ -44,3 +44,4 @@ Use the printed `trycloudflare.com` URL to test from a browser.
 - gTTS is a free text-to-speech package and does not require an API key.
 - Generated videos are saved under `static/generated/`.
 - Uploaded product images are saved under `static/uploads/`.
+- The `/generate` API accepts either `avatar` or `avatar_id` for the selected presenter.

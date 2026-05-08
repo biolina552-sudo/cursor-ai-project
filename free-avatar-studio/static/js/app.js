@@ -5,6 +5,7 @@ const progressFill = document.getElementById("progressFill");
 const prevStep = document.getElementById("prevStep");
 const nextStep = document.getElementById("nextStep");
 const productImage = document.getElementById("productImage");
+const productImageUrl = document.getElementById("productImageUrl");
 const productPreview = document.getElementById("productPreview");
 const scriptInput = document.getElementById("script");
 const wordCount = document.getElementById("wordCount");
@@ -49,10 +50,6 @@ function clearStatus() {
 }
 
 function validateStep(index) {
-    if (index === 0 && !productImage.files.length) {
-        setStatus("يرجى رفع صورة المنتج أولاً.", "error");
-        return false;
-    }
     if (index === 1 && !scriptInput.value.trim()) {
         setStatus("يرجى كتابة سكربت الإعلان.", "error");
         return false;
@@ -81,12 +78,31 @@ nextStep.addEventListener("click", () => {
 productImage.addEventListener("change", () => {
     const file = productImage.files[0];
     if (!file) {
-        productPreview.classList.add("hidden");
-        productPreview.removeAttribute("src");
+        const imageUrl = productImageUrl.value.trim();
+        if (imageUrl) {
+            productPreview.src = imageUrl;
+            productPreview.classList.remove("hidden");
+        } else {
+            productPreview.classList.add("hidden");
+            productPreview.removeAttribute("src");
+        }
         return;
     }
     productPreview.src = URL.createObjectURL(file);
     productPreview.classList.remove("hidden");
+});
+
+productImageUrl.addEventListener("input", () => {
+    const imageUrl = productImageUrl.value.trim();
+    if (imageUrl && !productImage.files.length) {
+        productPreview.src = imageUrl;
+        productPreview.classList.remove("hidden");
+        return;
+    }
+    if (!productImage.files.length) {
+        productPreview.classList.add("hidden");
+        productPreview.removeAttribute("src");
+    }
 });
 
 function updateWordCount() {
@@ -113,7 +129,7 @@ duration.addEventListener("input", () => {
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!validateStep(0) || !validateStep(1)) {
-        showStep(!productImage.files.length ? 0 : 1);
+        showStep(1);
         return;
     }
 

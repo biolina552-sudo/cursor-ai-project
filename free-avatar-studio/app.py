@@ -1,6 +1,9 @@
 import os
 import uuid
 from pathlib import Path
+from urllib.error import URLError
+from urllib.parse import urlparse
+from urllib.request import Request, urlopen
 
 import numpy as np
 from flask import Flask, jsonify, render_template, request, send_from_directory, url_for
@@ -48,6 +51,31 @@ LANGUAGES = {
 
 def allowed_image(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
+
+
+def validate_saved_image(path):
+    with Image.open(path) as image:
+        image = ImageOps.exif_transpose(image)
+        image.convert("RGB").save(path, quality=92)
+
+
+def download_product_image(image_url, target_path):
+    parsed = urlparse(image_url)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError("Product image URL must start with http:// or https://.")
+
+    request = Request(image_url, headers={"User-Agent": "free-avatar-studio/1.0"})
+    try:
+        with urlopen(request, timeout=20) as response:
+            content_type = response.headers.get("Content-Type", "")
+            if content_type and not content_type.lower().startswith("image/"):
+                raise ValueError("The product image URL did not return an image.")
+            target_path.write_bytes(response.read(12 * 1024 * 1024))
+    except URLError as exc:
+        raise ValueError(f"Could not download product image URL: {exc}") from exc
+
+    validate_saved_image(target_path)
+    return target_path
 
 
 def load_font(size, bold=False):
@@ -110,6 +138,28 @@ def gradient_background(width, height):
             color = middle * (1 - local) + bottom * local
         rows[y, :, :] = color
     return Image.fromarray(rows)
+
+
+def create_product_placeholder(path, product_name):
+    width, height = 900, 900
+    image = gradient_background(width, height).convert("RGBA")
+    draw = ImageDraw.Draw(image)
+
+    draw.ellipse((-160, -120, 330, 340), fill=(236, 196, 92, 40))
+    draw.ellipse((560, 580, 1040, 1040), fill=(119, 44, 172, 88))
+    draw.rounded_rectangle((120, 150, 780, 750), radius=76, fill=(255, 255, 255, 18), outline=(236, 196, 92, 150), width=5)
+    draw.ellipse((312, 250, 588, 526), fill=(236, 196, 92, 210))
+    draw.rounded_rectangle((250, 524, 650, 698), radius=72, fill=(236, 196, 92, 190))
+
+    title = product_name or "Your Product"
+    lines = wrap_text_for_width(draw, title, FONT_TITLE, 620, max_lines=2)
+    start_y = 720 - (len(lines) * 50)
+    for index, line in enumerate(lines):
+        draw_centered_text(draw, width / 2, start_y + index * 54, line, FONT_TITLE, (255, 255, 255, 240))
+
+    draw_centered_text(draw, width / 2, 102, "Free Avatar Studio", FONT_BODY, (236, 196, 92, 255))
+    image.convert("RGB").save(path, quality=92)
+    return path
 
 
 def draw_panel(base, box, radius=34):
@@ -288,8 +338,9 @@ def index():
 def generate():
     product_name = request.form.get("product_name", "").strip()[:80]
     script = request.form.get("script", "").strip()
-    avatar_id = request.form.get("avatar", "").strip()
+    avatar_id = (request.form.get("avatar") or request.form.get("avatar_id") or "").strip()
     language = request.form.get("language", "ar").strip()
+    product_image_url = request.form.get("product_image_url", "").strip()
 
     try:
         duration = int(request.form.get("duration", "25"))
@@ -302,12 +353,6 @@ def generate():
         return jsonify({"error": "Please enter a product script."}), 400
     if language not in LANGUAGES:
         return jsonify({"error": "Unsupported language selected."}), 400
-    if "product_image" not in request.files:
-        return jsonify({"error": "Please upload a product image."}), 400
-
-    upload = request.files["product_image"]
-    if not upload.filename or not allowed_image(upload.filename):
-        return jsonify({"error": "Upload a PNG, JPG, JPEG, or WEBP product image."}), 400
 
     avatar = next((item for item in AVATARS if item["id"] == avatar_id), None)
     if avatar is None:
@@ -318,10 +363,26 @@ def generate():
         return jsonify({"error": f"Avatar image is missing: {avatar['file']}. Run scripts/download_avatars.py."}), 500
 
     job_id = uuid.uuid4().hex
-    filename = secure_filename(upload.filename)
-    extension = filename.rsplit(".", 1)[1].lower()
-    product_image_path = UPLOAD_DIR / f"{job_id}.{extension}"
-    upload.save(product_image_path)
+    upload = request.files.get("product_image")
+    product_image_path = UPLOAD_DIR / f"{job_id}.jpg"
+
+    try:
+        if upload and upload.filename:
+            if not allowed_image(upload.filename):
+                return jsonify({"error": "Upload a PNG, JPG, JPEG, or WEBP product image."}), 400
+            filename = secure_filename(upload.filename)
+            extension = filename.rsplit(".", 1)[1].lower()
+            product_image_path = UPLOAD_DIR / f"{job_id}.{extension}"
+            upload.save(product_image_path)
+            validate_saved_image(product_image_path)
+        elif product_image_url:
+            download_product_image(product_image_url, product_image_path)
+        else:
+            create_product_placeholder(product_image_path, product_name or "عرض خاص")
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": f"Could not prepare product image: {exc}"}), 400
 
     try:
         output_path, trimmed_script = generate_ad_video(

@@ -291,8 +291,32 @@ h1 {
 .upload-zone small,
 .avatar-card small,
 .option-card span,
-.helper-row span {
+.helper-row span,
+.optional-note {
     color: var(--muted);
+}
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0;
+    color: var(--gold-strong);
+    font-weight: 800;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgba(236, 196, 92, 0.2);
+}
+
+.optional-note {
+    margin: -6px 0 14px;
+    line-height: 1.7;
+    font-size: 0.95rem;
 }
 
 .image-preview {

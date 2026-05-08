@@ -38,18 +38,22 @@
                 <article class="wizard-step active" data-step-panel="0">
                     <div class="step-heading">
                         <span>الخطوة 1</span>
-                        <h2>ارفع صورة المنتج</h2>
-                        <p>اختر صورة واضحة للمنتج واكتب اسمه ليظهر في الشريط السفلي المتحرك.</p>
+                        <h2>أضف صورة المنتج أو رابطها</h2>
+                        <p>ارفع صورة، أو ضع رابط صورة مباشر، أو اتركها فارغة لاستخدام خلفية افتراضية للمنتج.</p>
                     </div>
                     <label class="field-label" for="productName">اسم المنتج</label>
                     <input id="productName" name="product_name" class="text-input" type="text" maxlength="80" placeholder="مثال: عطر المساء الذهبي">
 
                     <label class="upload-zone" for="productImage">
-                        <input id="productImage" name="product_image" type="file" accept="image/png,image/jpeg,image/webp" required>
+                        <input id="productImage" name="product_image" type="file" accept="image/png,image/jpeg,image/webp">
                         <span class="upload-icon">⬆</span>
                         <strong>اضغط لاختيار صورة المنتج</strong>
-                        <small>PNG / JPG / WEBP حتى 16MB</small>
+                        <small>اختياري - PNG / JPG / WEBP حتى 16MB</small>
                     </label>
+                    <div class="or-divider"><span>أو</span></div>
+                    <label class="field-label" for="productImageUrl">رابط صورة المنتج</label>
+                    <input id="productImageUrl" name="product_image_url" class="text-input" type="url" placeholder="https://example.com/product.jpg">
+                    <p class="optional-note">إذا لم ترفع صورة ولم تضف رابطاً، سيتم إنشاء بطاقة منتج افتراضية بتدرج بنفسجي وذهبي.</p>
                     <img id="productPreview" class="image-preview hidden" alt="معاينة صورة المنتج">
                 </article>
 
