@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shoplina Video Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="hero">
+            <nav class="topbar">
+                <a class="brand" href="{{ url_for('index') }}" aria-label="Shoplina Video Studio">
+                    <span class="brand-mark">S</span>
+                    <span>
+                        <strong>Shoplina Video Studio</strong>
+                        <small>استوديو شوبلينا للفيديو</small>
+                    </span>
+                </a>
+                <div class="topbar-actions">
+                    <span class="status-pill {% if has_api_key %}ready{% endif %}">
+                        {% if has_api_key %}D-ID API جاهز{% else %}أضف مفتاح D-ID{% endif %}
+                    </span>
+                    <a class="ghost-button" href="{{ url_for('settings') }}">الإعدادات</a>
+                </div>
+            </nav>
+
+            <section class="hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow">AI Avatar Advertising Tool</span>
+                    <h1>حوّل صورة منتجك إلى إعلان فيديو احترافي بأفاتار يتحدث.</h1>
+                    <p>ارفع صورة المنتج، اكتب السكريبت، اختر اللغة والأفاتار، ثم أنشئ فيديو D-ID جاهز للتحميل والنشر.</p>
+                </div>
+                <div class="hero-card">
+                    <div class="pulse-ring"></div>
+                    <div class="preview-orb">
+                        <span>AI</span>
+                    </div>
+                    <p>إعلانات قصيرة من 15 إلى 40 ثانية</p>
+                </div>
+            </section>
+        </header>
+
+        <main class="studio-card">
+            <section class="wizard-progress" aria-label="خطوات إنشاء الفيديو">
+                <div class="progress-line"><span id="progressFill"></span></div>
+                <button class="progress-step active" type="button" data-step-indicator="1"><span>1</span>المنتج</button>
+                <button class="progress-step" type="button" data-step-indicator="2"><span>2</span>السكريبت</button>
+                <button class="progress-step" type="button" data-step-indicator="3"><span>3</span>الأفاتار</button>
+                <button class="progress-step" type="button" data-step-indicator="4"><span>4</span>اللغة</button>
+                <button class="progress-step" type="button" data-step-indicator="5"><span>5</span>المراجعة</button>
+                <button class="progress-step" type="button" data-step-indicator="6"><span>6</span>الفيديو</button>
+            </section>
+
+            <form id="studioForm" enctype="multipart/form-data">
+                <input type="hidden" id="avatarId" name="avatar_id" value="{{ avatars[0].id }}">
+
+                <section class="wizard-step active" data-step="1">
+                    <div class="step-heading">
+                        <span>Step 01</span>
+                        <h2>بيانات المنتج والصورة</h2>
+                        <p>أضف اسم المنتج وصورة واضحة لاستخدامها كمرجع للإعلان.</p>
+                    </div>
+                    <div class="form-grid">
+                        <label class="field">
+                            <span>اسم المنتج</span>
+                            <input id="productName" name="product_name" type="text" placeholder="مثال: عطر شرقي فاخر" required>
+                        </label>
+                        <label class="field">
+                            <span>وصف قصير / ميزة رئيسية</span>
+                            <input id="productBenefit" name="product_benefit" type="text" placeholder="ثبات طويل، تصميم أنيق، عرض محدود">
+                        </label>
+                    </div>
+                    <div class="dropzone" id="dropzone">
+                        <input id="productImage" name="product_image" type="file" accept="image/png,image/jpeg,image/webp">
+                        <div class="dropzone-copy" id="dropzoneCopy">
+                            <strong>اسحب صورة المنتج هنا</strong>
+                            <span>أو اضغط للاختيار - JPG / PNG / WEBP</span>
+                        </div>
+                        <img id="imagePreview" alt="معاينة صورة المنتج" hidden>
+                    </div>
+                </section>
+
+                <section class="wizard-step" data-step="2">
+                    <div class="step-heading">
+                        <span>Step 02</span>
+                        <h2>سكريبت الإعلان</h2>
+                        <p>اكتب النص الذي سيقوله الأفاتار، أو أنشئ سكريبت تلقائي من اسم المنتج.</p>
+                    </div>
+                    <div class="script-toolbar">
+                        <button class="gold-button" id="generateScriptButton" type="button">توليد سكريبت تلقائي</button>
+                        <span id="scriptHint">المدة المختارة تقترح نصًا موجزًا ومباشرًا.</span>
+                    </div>
+                    <label class="field">
+                        <span>نص الإعلان</span>
+                        <textarea id="scriptText" name="script" rows="9" placeholder="اكتب نص الإعلان هنا..." required></textarea>
+                    </label>
+                </section>
+
+                <section class="wizard-step" data-step="3">
+                    <div class="step-heading">
+                        <span>Step 03</span>
+                        <h2>اختر الأفاتار</h2>
+                        <p>اختر مقدم الإعلان المناسب لهوية المنتج.</p>
+                    </div>
+                    <div class="avatar-grid">
+                        {% for avatar in avatars %}
+                        <button class="avatar-card {% if loop.first %}selected{% endif %}" type="button" data-avatar-id="{{ avatar.id }}">
+                            <img src="{{ avatar.photo_url }}" alt="{{ avatar.name_en }}" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name={{ avatar.name_en }}&background=2d1458&color=f7c75d&size=360'">
+                            <span>{{ avatar.name_ar }} / {{ avatar.name_en }}</span>
+                            <small>{{ avatar.role }}</small>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </section>
+
+                <section class="wizard-step" data-step="4">
+                    <div class="step-heading">
+                        <span>Step 04</span>
+                        <h2>اللغة والمدة</h2>
+                        <p>حدد لغة الصوت ومدة الفيديو المطلوبة.</p>
+                    </div>
+                    <div class="language-grid">
+                        {% for key, language in languages.items() %}
+                        <label class="language-option">
+                            <input type="radio" name="language" value="{{ key }}" {% if loop.first %}checked{% endif %}>
+                            <span>{{ language.label_ar }}</span>
+                            <small>{{ language.label_en }}</small>
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <div class="duration-panel">
+                        <label for="durationRange">مدة الفيديو</label>
+                        <div class="duration-value"><strong id="durationValue">25</strong> ثانية</div>
+                        <input id="durationRange" name="duration" type="range" min="15" max="40" value="25">
+                        <div class="range-labels"><span>15s</span><span>40s</span></div>
+                    </div>
+                </section>
+
+                <section class="wizard-step" data-step="5">
+                    <div class="step-heading">
+                        <span>Step 05</span>
+                        <h2>مراجعة وإنشاء</h2>
+                        <p>راجع الإعدادات ثم ابدأ إنشاء فيديو الأفاتار عبر D-ID.</p>
+                    </div>
+                    <div class="review-grid">
+                        <article><span>المنتج</span><strong id="reviewProduct">-</strong></article>
+                        <article><span>الأفاتار</span><strong id="reviewAvatar">-</strong></article>
+                        <article><span>اللغة</span><strong id="reviewLanguage">-</strong></article>
+                        <article><span>المدة</span><strong id="reviewDuration">25 ثانية</strong></article>
+                    </div>
+                    <button class="primary-button generate-button" id="generateVideoButton" type="submit">إنشاء الفيديو الآن</button>
+                    <p class="api-note">يجب حفظ مفتاح D-ID API من صفحة الإعدادات قبل الإنشاء.</p>
+                </section>
+
+                <section class="wizard-step" data-step="6">
+                    <div class="step-heading">
+                        <span>Step 06</span>
+                        <h2>معاينة وتحميل الفيديو</h2>
+                        <p>عند اكتمال المعالجة سيظهر الفيديو هنا مع زر التحميل.</p>
+                    </div>
+                    <div class="video-result">
+                        <video id="resultVideo" controls playsinline hidden></video>
+                        <div id="emptyVideoState" class="empty-state">لم يتم إنشاء فيديو بعد.</div>
+                    </div>
+                    <div class="result-actions">
+                        <a id="downloadButton" class="gold-button disabled" href="#" download target="_blank" rel="noopener">تحميل الفيديو</a>
+                        <button class="ghost-button" id="newVideoButton" type="button">إنشاء فيديو جديد</button>
+                    </div>
+                </section>
+
+                <div class="wizard-actions">
+                    <button class="ghost-button" id="prevButton" type="button">السابق</button>
+                    <button class="primary-button" id="nextButton" type="button">التالي</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay" style="display:none !important" hidden>
+        <div class="loader-card">
+            <div class="loader"></div>
+            <h3>جاري إنشاء فيديو الأفاتار...</h3>
+            <p id="loadingText">تم إرسال الطلب إلى D-ID. ننتظر تجهيز الفيديو.</p>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        window.SHOPLINA = {
+            avatars: {{ avatars|tojson }},
+            languages: {{ languages|tojson }},
+            hasApiKey: {{ has_api_key|tojson }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
