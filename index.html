@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Marketing Video Studio</title>
+    <meta
+      name="description"
+      content="أداة بسيطة لإنشاء فيديوهات تسويقية بأفاتار AI باستخدام D-ID API."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <div class="glow glow-a"></div>
+      <div class="glow glow-b"></div>
+
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <strong>Marketing Video Studio</strong>
+            <small>D-ID Avatar Generator</small>
+          </div>
+        </div>
+        <span class="api-pill">Python + HTML + CSS + JS</span>
+      </header>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <span class="eyebrow">أداة فيديو تسويقي بالذكاء الاصطناعي</span>
+          <h1>أنشئ فيديو أفاتار يتكلم عن منتجك بواجهة بسيطة واحترافية.</h1>
+          <p>
+            اختر شخصية AI، ارفع صورة المنتج للمعاينة، اكتب وصف المنتج، واختر
+            اللغة. الخادم يرسل الطلب إلى D-ID API ثم يعرض الفيديو عند اكتماله.
+          </p>
+        </div>
+
+        <form id="videoForm" class="studio-card">
+          <section class="form-section">
+            <div class="section-title">
+              <span>1</span>
+              <div>
+                <h2>اختيار الأفاتار</h2>
+                <p>بطاقات شخصيات AI جاهزة للفيديو التسويقي.</p>
+              </div>
+            </div>
+
+            <div class="avatar-grid" id="avatarGrid">
+              <button
+                class="avatar-card selected"
+                type="button"
+                data-avatar="maya"
+                aria-pressed="true"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=90"
+                  alt="مايا"
+                />
+                <strong>مايا</strong>
+                <small>مقدمة منتجات فاخرة</small>
+              </button>
+              <button
+                class="avatar-card"
+                type="button"
+                data-avatar="adam"
+                aria-pressed="false"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=90"
+                  alt="آدم"
+                />
+                <strong>آدم</strong>
+                <small>خبير مبيعات تقني</small>
+              </button>
+              <button
+                class="avatar-card"
+                type="button"
+                data-avatar="lina"
+                aria-pressed="false"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=90"
+                  alt="لينا"
+                />
+                <strong>لينا</strong>
+                <small>صانعة محتوى اجتماعي</small>
+              </button>
+              <button
+                class="avatar-card"
+                type="button"
+                data-avatar="nour"
+                aria-pressed="false"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=900&q=90"
+                  alt="نور"
+                />
+                <strong>نور</strong>
+                <small>مستشارة علامات تجارية</small>
+              </button>
+            </div>
+          </section>
+
+          <div class="form-grid">
+            <section class="form-section">
+              <div class="section-title compact">
+                <span>2</span>
+                <div>
+                  <h2>رفع صورة المنتج</h2>
+                  <p>تظهر الصورة في المعاينة لتجهيز الفيديو.</p>
+                </div>
+              </div>
+
+              <label class="upload-box">
+                <input id="productImage" type="file" accept="image/*" />
+                <img id="productPreview" alt="معاينة صورة المنتج" hidden />
+                <span id="uploadPlaceholder">
+                  اضغط لرفع صورة المنتج
+                  <small>PNG / JPG / WEBP</small>
+                </span>
+              </label>
+              <p id="fileName" class="file-name"></p>
+            </section>
+
+            <section class="form-section">
+              <div class="section-title compact">
+                <span>3</span>
+                <div>
+                  <h2>اختيار اللغة</h2>
+                  <p>اختر لغة أو لهجة السكربت التسويقي.</p>
+                </div>
+              </div>
+
+              <select id="language" class="language-select">
+                <option value="moroccan">دارجة مغربية</option>
+                <option value="gulf">خليجية</option>
+                <option value="english">English</option>
+                <option value="french">Français</option>
+              </select>
+            </section>
+          </div>
+
+          <section class="form-section">
+            <div class="section-title compact">
+              <span>4</span>
+              <div>
+                <h2>وصف المنتج</h2>
+                <p>اكتب أهم المزايا والقيمة التي تريد إبرازها.</p>
+              </div>
+            </div>
+
+            <textarea
+              id="description"
+              rows="5"
+              placeholder="مثال: عطر فاخر يدوم طويلًا برائحة شرقية عصرية، مناسب للهدايا والمناسبات..."
+              required
+            ></textarea>
+          </section>
+
+          <button id="generateButton" class="generate-button" type="submit">
+            توليد فيديو
+          </button>
+        </form>
+      </section>
+
+      <section class="preview-card">
+        <div class="section-title">
+          <span>5</span>
+          <div>
+            <h2>معاينة وتحميل الفيديو</h2>
+            <p>
+              عند انتهاء D-ID من المعالجة سيظهر الفيديو هنا مع رابط التحميل.
+            </p>
+          </div>
+        </div>
+
+        <div class="preview-grid">
+          <div class="video-stage">
+            <video id="resultVideo" controls playsinline hidden></video>
+            <div id="emptyPreview" class="empty-preview">
+              <strong>الفيديو سيظهر هنا</strong>
+              <span>ابدأ باختيار الأفاتار وكتابة وصف المنتج.</span>
+            </div>
+          </div>
+
+          <aside class="status-panel">
+            <div id="statusBadge" class="status-badge">جاهز للتوليد</div>
+            <p class="helper-note">
+              يستخدم الخادم مفتاحًا افتراضيًا تجريبيًا
+              <code>demo_username:demo_password</code>. للتوليد الحقيقي ضع مفتاح
+              D-ID صالحًا في متغير البيئة <code>D_ID_API_KEY</code>.
+            </p>
+            <div id="videoIdBox" class="video-id" hidden>
+              Video ID
+              <strong id="videoId"></strong>
+            </div>
+            <div id="scriptBox" class="script-box" hidden>
+              <strong>النص المرسل للأفاتار</strong>
+              <p id="scriptText"></p>
+            </div>
+            <a id="downloadLink" class="download-button" href="#" download hidden>
+              تحميل الفيديو
+            </a>
+            <div id="errorBox" class="error-box" hidden></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

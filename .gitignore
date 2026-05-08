@@ -2,6 +2,8 @@
 node_modules
 out
 dist
+__pycache__
+.python-version
 coverage
 .env
 .env*.local
