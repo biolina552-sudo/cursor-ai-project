@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Settings - Shoplina Video Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="app-shell compact">
+        <header class="topbar settings-topbar">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-mark">S</span>
+                <span>
+                    <strong>Shoplina Video Studio</strong>
+                    <small>الإعدادات</small>
+                </span>
+            </a>
+            <a class="ghost-button" href="{{ url_for('index') }}">العودة للاستوديو</a>
+        </header>
+
+        <main class="settings-card">
+            <span class="eyebrow">D-ID API Settings</span>
+            <h1>حفظ مفتاح D-ID API</h1>
+            <p>سيتم تخزين المفتاح محليًا في ملف <code>avatar-studio/config.json</code> لاستخدامه مع endpoint <code>/talks</code>.</p>
+
+            {% if request.args.get('saved') %}
+            <div class="success-message">تم حفظ المفتاح بنجاح.</div>
+            {% endif %}
+
+            <form method="post" class="settings-form">
+                <label class="field">
+                    <span>D-ID API Key</span>
+                    <input name="did_api_key" type="password" placeholder="Basic API key أو token من لوحة D-ID" value="">
+                    <small>يمكنك لصق المفتاح فقط أو القيمة كاملة مع بادئة Basic / Bearer.</small>
+                </label>
+                <button class="primary-button" type="submit">حفظ الإعدادات</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
