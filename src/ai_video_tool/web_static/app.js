@@ -38,12 +38,12 @@ form.addEventListener("submit", async (event) => {
   };
 
   try {
-    const response = await fetch("/api/generate", {
+    const response = await fetch("/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    const data = await response.json();
+    const data = await readJsonResponse(response);
 
     if (!response.ok) {
       throw new Error(data.error || "تعذر توليد الفيديو.");
@@ -72,6 +72,20 @@ function parseOptionalNumber(value) {
   }
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
+}
+
+async function readJsonResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    const text = await response.text();
+    const preview = text.trim().slice(0, 120);
+    throw new Error(
+      preview
+        ? `الخادم لم يرجع JSON من مسار التوليد. الرد بدأ بـ: ${preview}`
+        : "الخادم لم يرجع JSON من مسار التوليد.",
+    );
+  }
+  return response.json();
 }
 
 function setLoading(isLoading) {

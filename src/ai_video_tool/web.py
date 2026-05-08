@@ -42,6 +42,7 @@ SUPPORTED_LANGUAGES = {
 
 MAX_REQUEST_BYTES = 32_768
 VIDEO_OUTPUT_DIR = Path("generated-videos")
+GENERATE_ENDPOINTS = {"/api/generate", "/generate"}
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -118,6 +119,9 @@ def create_handler(
             if parsed.path == "/":
                 self._send_static("index.html")
                 return
+            if parsed.path in GENERATE_ENDPOINTS:
+                self._send_json({"error": "Use POST to generate a video"}, status=HTTPStatus.METHOD_NOT_ALLOWED)
+                return
             if parsed.path.startswith("/static/"):
                 self._send_static(parsed.path.removeprefix("/static/"))
                 return
@@ -128,7 +132,7 @@ def create_handler(
 
         def do_POST(self) -> None:
             parsed = urlparse(self.path)
-            if parsed.path != "/api/generate":
+            if parsed.path not in GENERATE_ENDPOINTS:
                 self._send_json({"error": "Not found"}, status=HTTPStatus.NOT_FOUND)
                 return
 
