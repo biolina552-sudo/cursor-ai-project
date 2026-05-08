@@ -18,6 +18,20 @@ from ai_video_tool.web import (
 )
 
 
+class WebStaticTests(unittest.TestCase):
+    def test_index_loads_cache_busted_app_script(self) -> None:
+        index = Path("src/ai_video_tool/web_static/index.html").read_text(encoding="utf-8")
+
+        self.assertIn('/static/app.js?v=api-generate-', index)
+
+    def test_app_posts_to_api_generate(self) -> None:
+        script = Path("src/ai_video_tool/web_static/app.js").read_text(encoding="utf-8")
+
+        self.assertIn('const GENERATE_ENDPOINT = "/api/generate";', script)
+        self.assertIn("fetch(GENERATE_ENDPOINT", script)
+        self.assertNotIn('fetch("/generate"', script)
+
+
 class WebRequestTests(unittest.TestCase):
     def test_normalize_generation_request_supports_darija(self) -> None:
         request_data = normalize_generation_request(

@@ -6,6 +6,7 @@ const videoPreview = document.querySelector("#video-preview");
 const emptyPreview = document.querySelector("#empty-preview");
 const downloadLink = document.querySelector("#download-link");
 const promptEl = document.querySelector("#prompt");
+const GENERATE_ENDPOINT = "/api/generate";
 
 const placeholders = {
   moroccan_darija:
@@ -38,7 +39,7 @@ form.addEventListener("submit", async (event) => {
   };
 
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch(GENERATE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
