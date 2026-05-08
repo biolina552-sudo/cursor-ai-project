@@ -18,6 +18,7 @@ from urllib.parse import unquote, urlparse
 
 from ai_video_tool.cli import DEFAULT_MODEL
 from ai_video_tool.client import ReplicateClient, VideoGenerationError, build_inputs
+from ai_video_tool.env import load_dotenv
 
 
 SUPPORTED_LANGUAGES = {
@@ -47,15 +48,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    load_dotenv()
     token = os.environ.get(args.token_env)
     if not token:
-        print(f"ai-video-web: error: {args.token_env} is not set", file=sys.stderr)
-        return 1
+        print(f"ai-video-web: warning: {args.token_env} is not set. Add it to .env before generating videos.", file=sys.stderr)
 
     video_dir = args.output_dir.resolve()
     video_dir.mkdir(parents=True, exist_ok=True)
 
-    client_factory = lambda: ReplicateClient(token)
+    def client_factory() -> ReplicateClient:
+        api_token = os.environ.get(args.token_env)
+        if not api_token:
+            raise VideoGenerationError(f"{args.token_env} is not set. Add it to .env before generating videos.")
+        return ReplicateClient(api_token)
     handler_class = create_handler(
         client_factory=client_factory,
         video_dir=video_dir,

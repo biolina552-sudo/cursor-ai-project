@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from ai_video_tool.client import ReplicateClient, VideoGenerationError, build_inputs
+from ai_video_tool.env import load_dotenv
 
 
 DEFAULT_MODEL = "minimax/video-01"
@@ -104,9 +105,10 @@ def build_parser() -> argparse.ArgumentParser:
 
 def generate(args: argparse.Namespace) -> int:
     try:
+        load_dotenv()
         token = os.environ.get(args.token_env)
         if not token:
-            raise VideoGenerationError(f"{args.token_env} is not set")
+            raise VideoGenerationError(f"{args.token_env} is not set. Add it to .env or export it in your shell.")
 
         base_inputs = load_input_json(args.input_json)
         base_inputs.update(parse_params(args.param))

@@ -38,8 +38,8 @@ class CliGenerateTests(unittest.TestCase):
             )
 
             with mock.patch.dict(os.environ, {"REPLICATE_API_TOKEN": "token"}), mock.patch(
-                "ai_video_tool.cli.ReplicateClient"
-            ) as client_class:
+                "ai_video_tool.cli.load_dotenv"
+            ) as load_dotenv, mock.patch("ai_video_tool.cli.ReplicateClient") as client_class:
                 client = client_class.return_value
                 client.generate_video.return_value = result
 
@@ -59,6 +59,7 @@ class CliGenerateTests(unittest.TestCase):
                 )
 
             self.assertEqual(exit_code, 0)
+            load_dotenv.assert_called_once_with()
             client_class.assert_called_once_with("token")
             client.generate_video.assert_called_once()
             kwargs = client.generate_video.call_args.kwargs
@@ -68,7 +69,7 @@ class CliGenerateTests(unittest.TestCase):
             self.assertEqual(json.loads(metadata.read_text(encoding="utf-8")), result.prediction)
 
     def test_generate_requires_api_token(self) -> None:
-        with mock.patch.dict(os.environ, {}, clear=True):
+        with mock.patch.dict(os.environ, {}, clear=True), mock.patch("ai_video_tool.cli.load_dotenv"):
             exit_code = cli.main(["generate", "a cat", "--output", "cat.mp4"])
 
         self.assertEqual(exit_code, 1)

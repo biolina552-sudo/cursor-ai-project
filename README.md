@@ -20,12 +20,28 @@ model-specific inputs from the command line or web server options.
 python3 -m pip install -e .
 ```
 
+## Configure your Replicate token
+
+Copy the example environment file:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` and replace the placeholder with your real token:
+
+```bash
+REPLICATE_API_TOKEN=r8_your_real_token_here
+```
+
+The application loads `.env` automatically. The real `.env` file is ignored by
+Git so the token is not committed.
+
 ## Web interface
 
 Start the web studio:
 
 ```bash
-export REPLICATE_API_TOKEN="r8_..."
 ai-video-web
 ```
 
@@ -54,8 +70,6 @@ Generated files are stored in `generated-videos/`.
 ## Command-line usage
 
 ```bash
-export REPLICATE_API_TOKEN="r8_..."
-
 ai-video generate "A cinematic drone shot over a neon city at night" \
   --model minimax/video-01 \
   --output city.mp4
