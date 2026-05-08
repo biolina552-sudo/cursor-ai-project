@@ -733,14 +733,11 @@ input[type="range"] {
     z-index: 20;
     inset: 0;
     display: none;
-    place-items: center;
+    align-items: center;
+    justify-content: center;
     padding: 24px;
     background: rgba(4, 2, 10, 0.78);
     backdrop-filter: blur(14px);
-}
-
-.loading-overlay.is-visible {
-    display: grid;
 }
 
 .loader-card {
