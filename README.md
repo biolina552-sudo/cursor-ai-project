@@ -1,12 +1,13 @@
-# AI Video Tool
+# AI Video Studio
 
-A small command-line tool for generating videos with artificial intelligence.
-The tool submits a text prompt to an AI video model, waits for the prediction to
-finish, and downloads the generated video file.
+A small web and command-line tool for generating videos with artificial
+intelligence. The tool submits a text prompt to an AI video model, waits for the
+prediction to finish, downloads the generated video file, and can preview it in a
+modern web interface.
 
 The default provider is [Replicate](https://replicate.com), because it exposes
 many text-to-video models behind one HTTP API. You can change the model and pass
-model-specific inputs from the command line.
+model-specific inputs from the command line or web server options.
 
 ## Requirements
 
@@ -19,7 +20,38 @@ model-specific inputs from the command line.
 python3 -m pip install -e .
 ```
 
-## Usage
+## Web interface
+
+Start the web studio:
+
+```bash
+export REPLICATE_API_TOKEN="r8_..."
+ai-video-web
+```
+
+Open the browser at:
+
+```text
+http://127.0.0.1:8000
+```
+
+The interface includes:
+
+- A prompt field for describing the video
+- Language selection for Moroccan Darija, Gulf Arabic, English, and French
+- A generate button
+- A video preview panel
+- A download link for the finished video
+
+You can customize the server:
+
+```bash
+ai-video-web --host 0.0.0.0 --port 8080 --model minimax/video-01
+```
+
+Generated files are stored in `generated-videos/`.
+
+## Command-line usage
 
 ```bash
 export REPLICATE_API_TOKEN="r8_..."

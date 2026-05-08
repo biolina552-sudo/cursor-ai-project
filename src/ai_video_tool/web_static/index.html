@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Video Studio</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero__content">
+          <p class="eyebrow">AI Video Studio</p>
+          <h1>حوّل أفكارك إلى فيديوهات احترافية بالذكاء الاصطناعي</h1>
+          <p class="subtitle">
+            اكتب وصفك بالدارجة المغربية، الخليجية، الإنجليزية أو الفرنسية،
+            واختر اللغة ثم شاهد النتيجة مباشرة داخل المتصفح.
+          </p>
+          <div class="badges" aria-label="Supported languages">
+            <span>الدارجة المغربية</span>
+            <span>الخليجية</span>
+            <span>English</span>
+            <span>Français</span>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="orb orb--one"></div>
+          <div class="orb orb--two"></div>
+          <div class="preview-card">
+            <div class="preview-card__top">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="preview-card__screen">
+              <div class="play-icon">▶</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="studio" aria-label="Video generation form">
+        <form id="video-form" class="composer">
+          <div class="field">
+            <label for="prompt">اكتب وصف الفيديو</label>
+            <textarea
+              id="prompt"
+              name="prompt"
+              rows="7"
+              required
+              placeholder="مثال: لقطة سينمائية لمدينة مستقبلية تحت المطر، أضواء نيون، حركة كاميرا بطيئة..."
+            ></textarea>
+          </div>
+
+          <div class="grid">
+            <div class="field">
+              <label for="language">لغة الوصف</label>
+              <select id="language" name="language">
+                <option value="moroccan_darija">الدارجة المغربية</option>
+                <option value="gulf_arabic">الخليجية</option>
+                <option value="english">English</option>
+                <option value="french">Français</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="model">نموذج الفيديو</label>
+              <input id="model" name="model" value="minimax/video-01" />
+            </div>
+          </div>
+
+          <details class="advanced">
+            <summary>إعدادات متقدمة</summary>
+            <div class="grid">
+              <div class="field">
+                <label for="duration">المدة بالثواني</label>
+                <input id="duration" name="duration" type="number" min="1" max="30" value="5" />
+              </div>
+              <div class="field">
+                <label for="aspect-ratio">نسبة العرض</label>
+                <select id="aspect-ratio" name="aspect_ratio">
+                  <option value="">حسب النموذج</option>
+                  <option value="16:9">16:9</option>
+                  <option value="9:16">9:16</option>
+                  <option value="1:1">1:1</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
+          <button id="generate-button" type="submit">
+            <span class="button__idle">توليد الفيديو</span>
+            <span class="button__loading">جاري التوليد...</span>
+          </button>
+
+          <p id="status" class="status" role="status" aria-live="polite">
+            جاهز لاستقبال وصفك.
+          </p>
+        </form>
+
+        <aside class="result">
+          <div class="result__header">
+            <div>
+              <p class="eyebrow">Preview</p>
+              <h2>معاينة النتيجة</h2>
+            </div>
+            <span id="result-pill" class="pill">بانتظار التوليد</span>
+          </div>
+
+          <div id="empty-preview" class="empty-preview">
+            <div class="empty-preview__icon">🎬</div>
+            <p>سيظهر الفيديو هنا بعد اكتمال التوليد.</p>
+          </div>
+
+          <video id="video-preview" controls playsinline hidden></video>
+
+          <a id="download-link" class="download-link" href="#" download hidden>
+            تحميل الفيديو
+          </a>
+        </aside>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
