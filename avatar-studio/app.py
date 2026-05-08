@@ -70,6 +70,38 @@ AVATARS = [
         "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Emily_f/image.png",
         "photo_url": "https://create-images-results.d-id.com/DefaultPresenters/Emily_f/image.png",
     },
+    {
+        "id": "ahmed",
+        "name_en": "Ahmed",
+        "name_ar": "أحمد",
+        "role": "Arabic male presenter",
+        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Eric_m/image.png",
+        "photo_url": "https://randomuser.me/api/portraits/men/32.jpg",
+    },
+    {
+        "id": "fatima",
+        "name_en": "Fatima",
+        "name_ar": "فاطمة",
+        "role": "Arabic female presenter",
+        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Sara_f/image.png",
+        "photo_url": "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+        "id": "mohammed",
+        "name_en": "Mohammed",
+        "name_ar": "محمد",
+        "role": "Arabic male presenter",
+        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/William_m/image.png",
+        "photo_url": "https://randomuser.me/api/portraits/men/45.jpg",
+    },
+    {
+        "id": "noura",
+        "name_en": "Noura",
+        "name_ar": "نورة",
+        "role": "Arabic female presenter",
+        "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Emma_f/image.png",
+        "photo_url": "https://randomuser.me/api/portraits/women/68.jpg",
+    },
 ]
 
 LANGUAGES = {
