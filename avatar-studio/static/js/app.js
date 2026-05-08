@@ -153,6 +153,7 @@ function generateScript() {
 
 function setLoading(isLoading, message) {
     loadingOverlay.hidden = !isLoading;
+    loadingOverlay.style.display = isLoading ? "" : "none";
     loadingOverlay.classList.toggle("is-visible", isLoading);
     loadingOverlay.setAttribute("aria-hidden", String(!isLoading));
     loadingText.textContent = message || "تم إرسال الطلب إلى D-ID. ننتظر تجهيز الفيديو.";
