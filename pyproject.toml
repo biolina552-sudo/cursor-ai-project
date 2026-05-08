@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-video-tool"
+version = "0.1.0"
+description = "Command-line and web tool for generating AI videos through provider APIs."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Cursor AI Project" }]
+dependencies = []
+
+[project.scripts]
+ai-video = "ai_video_tool.cli:main"
+ai-video-web = "ai_video_tool.web:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ai_video_tool = ["web_static/*"]
