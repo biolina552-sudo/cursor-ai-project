@@ -122,6 +122,20 @@ h1 {
     font-size: 0.92rem;
 }
 
+.settings-button {
+    position: absolute;
+    inset-inline-end: 28px;
+    bottom: 24px;
+    z-index: 2;
+    padding: 12px 18px;
+    border: 1px solid rgba(236, 196, 92, 0.35);
+    border-radius: 999px;
+    color: var(--gold-strong);
+    background: rgba(20, 8, 39, 0.74);
+    cursor: pointer;
+    font-weight: 800;
+}
+
 .studio-layout {
     display: grid;
     grid-template-columns: 260px minmax(0, 1fr);
@@ -404,6 +418,24 @@ h1 {
     color: var(--white);
 }
 
+.avatar-placeholder,
+.empty-state {
+    min-height: 150px;
+    display: grid;
+    place-items: center;
+    border-radius: 18px;
+    color: var(--gold-strong);
+    background: rgba(236, 196, 92, 0.12);
+    border: 1px solid rgba(236, 196, 92, 0.22);
+    text-align: center;
+    padding: 16px;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    color: var(--muted);
+}
+
 .avatar-card:has(input:checked),
 .option-card:has(input:checked) {
     border-color: rgba(236, 196, 92, 0.76);
@@ -499,6 +531,41 @@ h1 {
     border-radius: 18px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.06);
+}
+
+.heygen-progress {
+    height: 12px;
+    margin-top: 18px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#heygenProgressFill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--gold), #fff0ad, var(--gold-strong));
+    transition: width 0.6s ease;
+}
+
+.settings-dialog {
+    width: min(560px, calc(100vw - 28px));
+    border: 1px solid rgba(236, 196, 92, 0.28);
+    border-radius: 28px;
+    color: var(--white);
+    background: linear-gradient(135deg, rgba(54, 20, 86, 0.98), rgba(23, 8, 38, 0.98));
+    box-shadow: var(--shadow);
+    padding: 26px;
+}
+
+.settings-dialog::backdrop {
+    background: rgba(6, 2, 12, 0.72);
+    backdrop-filter: blur(6px);
+}
+
+.settings-dialog code {
+    color: var(--gold-strong);
 }
 
 .status-box.error {
@@ -630,6 +697,11 @@ h1 {
         width: 100%;
         height: auto;
         padding: 18px;
+    }
+
+    .settings-button {
+        position: static;
+        width: 100%;
     }
 
     .wizard-card {

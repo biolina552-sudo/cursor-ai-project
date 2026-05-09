@@ -1,19 +1,15 @@
 # Free Avatar Studio
 
-A fully free Flask tool for creating avatar-style advertising videos with no paid APIs.
+A Flask tool for creating real talking-avatar advertising videos with the HeyGen API.
 
 ## What it does
 
-- Upload a product image, paste a product image URL, or leave the image blank to use a generated placeholder.
+- Save a HeyGen API key from the Settings dialog.
+- Fetch HeyGen avatars from `GET /v2/avatars`.
+- Fetch HeyGen voices from `GET /v2/voices`, with Arabic voices prioritized in the UI.
 - Write an Arabic, English, or French product script.
-- Select one of 8 bundled avatar presenter photos.
-- Choose a 15-40 second duration.
-- Generate an MP4 video with:
-  - Avatar photo on the left.
-  - Product image on the right.
-  - Animated product name bar.
-  - Dark purple/gold visual style.
-  - gTTS voiceover reading the script.
+- Generate a real talking-avatar video through `POST /v2/video/generate`.
+- Poll `GET /v1/video_status.get?video_id=...` until HeyGen returns the final video URL.
 
 ## Setup
 
@@ -22,7 +18,6 @@ cd free-avatar-studio
 python3 -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
-python scripts/download_avatars.py
 python app.py
 ```
 
@@ -40,8 +35,7 @@ Use the printed `trycloudflare.com` URL to test from a browser.
 
 ## Notes
 
-- This project uses gTTS, MoviePy, Flask, and Pillow only.
-- gTTS is a free text-to-speech package and does not require an API key.
-- Generated videos are saved under `static/generated/`.
-- Uploaded product images are saved under `static/uploads/`.
-- The `/generate` API accepts either `avatar` or `avatar_id` for the selected presenter.
+- This project now uses Flask + Requests to proxy HeyGen API calls.
+- The API key is stored locally in `config.json`, which is ignored by git.
+- The `/generate` API accepts either `avatar` or `avatar_id` for the selected HeyGen avatar.
+- Generated video files are hosted by HeyGen; the app returns HeyGen's final video URL.
