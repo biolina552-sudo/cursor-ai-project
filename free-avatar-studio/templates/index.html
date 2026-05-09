@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Free Avatar Studio | HeyGen Talking Avatar Ads</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <main class="page-shell">
+        <section class="hero-card">
+            <div class="hero-copy">
+                <span class="eyebrow">HeyGen API • Real Talking Avatars</span>
+                <h1>Free Avatar Studio</h1>
+                <p>أنشئ فيديو إعلان احترافي بأفاتار حقيقي يتحدث عبر HeyGen. أدخل مفتاح API المجاني، اختر الأفاتار والصوت، ثم اترك HeyGen يولد الفيديو النهائي.</p>
+            </div>
+            <div class="hero-badge">
+                <strong>AI</strong>
+                <span>Real avatar video</span>
+            </div>
+            <button id="settingsButton" class="settings-button" type="button">Settings / API Key</button>
+        </section>
+
+        <form id="studioForm" class="studio-layout">
+            <aside class="steps-panel" aria-label="خطوات إنشاء الفيديو">
+                <button class="step-pill active" type="button" data-step="0"><span>1</span> المنتج</button>
+                <button class="step-pill" type="button" data-step="1"><span>2</span> السكربت</button>
+                <button class="step-pill" type="button" data-step="2"><span>3</span> الأفاتار</button>
+                <button class="step-pill" type="button" data-step="3"><span>4</span> اللغة</button>
+                <button class="step-pill" type="button" data-step="4"><span>5</span> المدة</button>
+                <button class="step-pill" type="button" data-step="5"><span>6</span> التوليد</button>
+            </aside>
+
+            <section class="wizard-card">
+                <div class="progress-track">
+                    <div id="progressFill"></div>
+                </div>
+
+                <article class="wizard-step active" data-step-panel="0">
+                    <div class="step-heading">
+                        <span>الخطوة 1</span>
+                        <h2>معلومات المنتج</h2>
+                        <p>سيستخدم HeyGen النص لإنتاج فيديو أفاتار حقيقي. يمكن إضافة اسم المنتج داخل السكربت أو في الحقل التالي.</p>
+                    </div>
+                    <label class="field-label" for="productName">اسم المنتج</label>
+                    <input id="productName" name="product_name" class="text-input" type="text" maxlength="80" placeholder="مثال: عطر المساء الذهبي">
+                    <label class="field-label" for="aspectRatio">مقاس الفيديو</label>
+                    <select id="aspectRatio" name="aspect_ratio" class="text-input">
+                        <option value="16:9">16:9 YouTube / Website</option>
+                        <option value="9:16">9:16 Reels / TikTok</option>
+                        <option value="1:1">1:1 Square Ads</option>
+                    </select>
+                    <div id="apiKeyNotice" class="status-box error hidden">أضف مفتاح HeyGen API من Settings قبل تحميل الأفاتارات أو توليد الفيديو.</div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="1">
+                    <div class="step-heading">
+                        <span>الخطوة 2</span>
+                        <h2>اكتب سكربت الإعلان</h2>
+                        <p>اكتب النص الذي سيقرأه الأفاتار الحقيقي بصوت HeyGen المختار.</p>
+                    </div>
+                    <textarea id="script" name="script" class="script-input" required placeholder="اكتب هنا: اكتشفوا منتجنا الجديد بجودة عالية وسعر مميز..."></textarea>
+                    <div class="helper-row">
+                        <button class="ghost-button" id="sampleArabic" type="button">نموذج عربي</button>
+                        <button class="ghost-button" id="sampleEnglish" type="button">English sample</button>
+                        <span id="wordCount">0 كلمة</span>
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="2">
+                    <div class="step-heading">
+                        <span>الخطوة 3</span>
+                        <h2>اختر HeyGen Avatar</h2>
+                        <p>يتم تحميل الأفاتارات مباشرة من حساب HeyGen الخاص بك.</p>
+                    </div>
+                    <div class="helper-row">
+                        <button class="ghost-button" id="refreshAvatars" type="button">Refresh Avatars</button>
+                        <span id="avatarLoadStatus">لم يتم التحميل بعد</span>
+                    </div>
+                    <div id="avatarGrid" class="avatar-grid"></div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="3">
+                    <div class="step-heading">
+                        <span>الخطوة 4</span>
+                        <h2>اختر صوت HeyGen</h2>
+                        <p>اختر صوتاً عربياً من HeyGen Voices. يمكنك تحديث القائمة بعد حفظ مفتاح API.</p>
+                    </div>
+                    <div class="helper-row">
+                        <button class="ghost-button" id="refreshVoices" type="button">Refresh Voices</button>
+                        <span id="voiceLoadStatus">لم يتم التحميل بعد</span>
+                    </div>
+                    <div id="voiceGrid" class="option-grid three"></div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="4">
+                    <div class="step-heading">
+                        <span>الخطوة 5</span>
+                        <h2>مدة تقديرية</h2>
+                        <p>HeyGen يحدد مدة الفيديو حسب طول النص والصوت. هذا المؤشر يساعدك على ضبط طول السكربت فقط.</p>
+                    </div>
+                    <div class="duration-card">
+                        <input id="duration" name="duration" type="range" min="15" max="40" value="25">
+                        <div class="duration-value"><span id="durationValue">25</span> ثانية</div>
+                    </div>
+                </article>
+
+                <article class="wizard-step" data-step-panel="5">
+                    <div class="step-heading">
+                        <span>الخطوة 6</span>
+                        <h2>ولّد الفيديو وحمّله</h2>
+                        <p>سيتم إرسال النص والأفاتار والصوت إلى HeyGen، ثم سننتظر اكتمال الفيديو الحقيقي ونرجع رابط المعاينة والتحميل.</p>
+                    </div>
+                    <button id="generateButton" class="generate-button" type="submit">
+                        <span class="button-label">Generate HeyGen Video</span>
+                        <span class="spinner hidden"></span>
+                    </button>
+                    <div id="heygenProgress" class="heygen-progress hidden">
+                        <div id="heygenProgressFill"></div>
+                    </div>
+                    <div id="statusBox" class="status-box hidden" role="status"></div>
+                    <div id="resultPanel" class="result-panel hidden">
+                        <video id="resultVideo" controls playsinline></video>
+                        <a id="downloadLink" class="download-button" href="#" download>Download MP4</a>
+                        <p id="trimmedScript"></p>
+                    </div>
+                </article>
+
+                <div class="wizard-actions">
+                    <button id="prevStep" class="secondary-button" type="button">السابق</button>
+                    <button id="nextStep" class="primary-button" type="button">التالي</button>
+                </div>
+            </section>
+        </form>
+    </main>
+
+    <dialog id="settingsDialog" class="settings-dialog">
+        <form id="settingsForm" method="dialog">
+            <div class="step-heading">
+                <span>Settings</span>
+                <h2>HeyGen API Key</h2>
+                <p>أدخل مفتاح HeyGen API الخاص بك. سيتم حفظه محلياً في <code>config.json</code> داخل مجلد التطبيق.</p>
+            </div>
+            <label class="field-label" for="heygenApiKey">X-Api-Key</label>
+            <input id="heygenApiKey" name="heygen_api_key" class="text-input" type="password" placeholder="Paste your HeyGen API key">
+            <div class="wizard-actions">
+                <button id="closeSettings" class="secondary-button" type="button">إغلاق</button>
+                <button class="primary-button" type="submit">Save Key</button>
+            </div>
+            <div id="settingsStatus" class="status-box hidden"></div>
+        </form>
+    </dialog>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
