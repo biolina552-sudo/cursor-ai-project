@@ -372,6 +372,7 @@ h1 {
 
 .avatar-card,
 .option-card {
+    position: relative;
     display: grid;
     gap: 10px;
     padding: 14px;
@@ -412,6 +413,22 @@ h1 {
 
 .avatar-card:has(input:checked) img {
     border-color: var(--gold);
+    animation: avatarTalkPulse 0.9s ease-in-out infinite;
+}
+
+.avatar-card:has(input:checked)::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 47%;
+    width: 34px;
+    height: 6px;
+    border-radius: 999px;
+    background: #3e0e32;
+    box-shadow: 0 0 12px rgba(236, 196, 92, 0.65);
+    transform: translateX(-50%);
+    animation: avatarMouthTalk 0.28s ease-in-out infinite alternate;
+    pointer-events: none;
 }
 
 .option-grid {
@@ -551,6 +568,27 @@ h1 {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes avatarTalkPulse {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-3px) scale(1.018);
+    }
+}
+
+@keyframes avatarMouthTalk {
+    from {
+        height: 4px;
+        opacity: 0.72;
+    }
+    to {
+        height: 13px;
+        opacity: 1;
     }
 }
 
