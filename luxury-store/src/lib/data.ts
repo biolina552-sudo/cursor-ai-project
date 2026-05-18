@@ -165,8 +165,77 @@ export const testimonials = [
   },
 ];
 
+export type LandingPage = {
+  id: string;
+  slug: string;
+  productSlug: string;
+  title: string;
+  titleAr: string;
+  subtitle: string;
+  subtitleAr: string;
+  offer: string;
+  offerAr: string;
+  angle: string;
+  angleAr: string;
+  badge: string;
+  badgeAr: string;
+  bullets: string[];
+  bulletsAr: string[];
+  status: "published" | "draft";
+  conversionRate: number;
+};
+
+export const landingPages: LandingPage[] = [
+  {
+    id: "lp-oud-cod",
+    slug: "oud-noir-cod-offer",
+    productSlug: "oud-noir-parfum",
+    title: "Oud Noir limited COD offer",
+    titleAr: "عرض عود نوار المحدود بالدفع عند الاستلام",
+    subtitle:
+      "A premium fragrance landing page built for direct response campaigns and fast confirmation calls.",
+    subtitleAr:
+      "صفحة هبوط لعطر فاخر مصممة لحملات البيع المباشر وتأكيد الطلب بسرعة.",
+    offer: "Free delivery + cash on delivery today",
+    offerAr: "توصيل مجاني + الدفع عند الاستلام اليوم",
+    angle: "For evenings, gifting and luxury daily presence.",
+    angleAr: "للمناسبات، الهدايا، والحضور اليومي الفاخر.",
+    badge: "Best seller",
+    badgeAr: "الأكثر مبيعًا",
+    bullets: ["Long-lasting extrait", "Premium gift packaging", "Confirm by phone in 24h"],
+    bulletsAr: ["ثبات طويل", "تغليف فاخر للهدايا", "تأكيد هاتفي خلال 24 ساعة"],
+    status: "published",
+    conversionRate: 7.8,
+  },
+  {
+    id: "lp-blazer-vip",
+    slug: "silk-blazer-vip-drop",
+    productSlug: "silk-structured-blazer",
+    title: "Silk blazer VIP drop",
+    titleAr: "إطلاق VIP لبليزر الحرير",
+    subtitle:
+      "A refined landing page for high-ticket apparel with scarcity and premium trust messaging.",
+    subtitleAr:
+      "صفحة هبوط لمنتج أزياء فاخر مع عناصر الندرة والثقة.",
+    offer: "Limited stock - VIP packaging included",
+    offerAr: "كمية محدودة - تغليف VIP مشمول",
+    angle: "Tailored for events, dinners and executive style.",
+    angleAr: "مصمم للمناسبات والعشاء والإطلالات الرسمية.",
+    badge: "VIP drop",
+    badgeAr: "إصدار VIP",
+    bullets: ["Heavy silk tailoring", "Gold hardware", "Easy size exchange"],
+    bulletsAr: ["تفصيل حرير فاخر", "إكسسوارات ذهبية", "استبدال المقاس بسهولة"],
+    status: "published",
+    conversionRate: 5.9,
+  },
+];
+
 export function getProductBySlug(slug: string) {
   return products.find((product) => product.slug === slug);
+}
+
+export function getLandingPageBySlug(slug: string) {
+  return landingPages.find((page) => page.slug === slug);
 }
 
 export function priceForCurrency(product: Product, currency: string) {

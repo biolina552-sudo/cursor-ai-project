@@ -13,6 +13,7 @@ import {
   FolderTree,
   Globe2,
   LayoutDashboard,
+  Megaphone,
   LogOut,
   MessageSquareText,
   Package,
@@ -51,6 +52,7 @@ export function AdminShell({
   const navItems = [
     { label: copy.nav.overview, href: "/admin", icon: LayoutDashboard },
     { label: copy.nav.products, href: "/admin/products", icon: Package },
+    { label: copy.nav.landing, href: "/admin/landing-pages", icon: Megaphone },
     { label: copy.nav.orders, href: "/admin/orders", icon: ClipboardList },
     { label: copy.nav.customers, href: "/admin/customers", icon: UsersRound },
     { label: copy.nav.categories, href: "/admin/categories", icon: FolderTree },

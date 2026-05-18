@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { products } from "@/lib/data";
+import { landingPages, products } from "@/lib/data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://luxury-store.example.com";
@@ -21,6 +21,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.9,
+      })),
+    ),
+    ...locales.flatMap((locale) =>
+      landingPages.map((page) => ({
+        url: `${baseUrl}/${locale}/landing/${page.slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.95,
       })),
     ),
   ];

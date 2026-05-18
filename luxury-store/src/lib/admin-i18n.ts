@@ -22,6 +22,7 @@ export const adminCopy = {
     nav: {
       overview: "Dashboard Overview",
       products: "Products Management",
+      landing: "Landing Pages",
       orders: "Orders Management",
       customers: "Customers Management",
       categories: "Categories Management",
@@ -122,6 +123,7 @@ export const adminCopy = {
     nav: {
       overview: "نظرة عامة",
       products: "إدارة المنتجات",
+      landing: "صفحات الهبوط",
       orders: "إدارة الطلبات",
       customers: "إدارة العملاء",
       categories: "إدارة التصنيفات",
