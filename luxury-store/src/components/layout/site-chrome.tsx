@@ -2,6 +2,7 @@
 
 import { usePathname } from "@/i18n/routing";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import { FloatingSupport } from "@/components/layout/floating-support";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 
@@ -25,6 +26,7 @@ export function SiteChrome({
       <main>{children}</main>
       <Footer locale={locale} />
       <CartDrawer locale={locale} />
+      <FloatingSupport locale={locale} />
     </>
   );
 }

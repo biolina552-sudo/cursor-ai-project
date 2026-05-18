@@ -3,6 +3,7 @@
 import { NextIntlClientProvider } from "next-intl";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "./theme-provider";
+import { TrackingEvents } from "@/lib/tracking";
 
 export function AppProviders({
   children,
@@ -16,6 +17,7 @@ export function AppProviders({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <ThemeProvider>
+        <TrackingEvents />
         {children}
         <Toaster richColors position="top-center" />
       </ThemeProvider>

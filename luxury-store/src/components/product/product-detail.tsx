@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { Star } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Banknote, Clock3, Phone, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/lib/data";
 import { useCartStore } from "@/lib/cart-store";
@@ -10,6 +10,8 @@ import { resolveCountry } from "@/lib/regions";
 import { formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { trackEvent } from "@/lib/tracking";
 
 export function ProductDetail({
   product,
@@ -21,13 +23,42 @@ export function ProductDetail({
   const [image, setImage] = useState(product.images[0]);
   const [color, setColor] = useState(product.colors[0]);
   const [size, setSize] = useState(product.sizes[0]);
+  const [timeLeft, setTimeLeft] = useState(12 * 60 + 43);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [checkoutStarted, setCheckoutStarted] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const country = resolveCountry("SA");
   const price = product.priceUsd * (country.currency === "SAR" ? 3.75 : 1);
+  const rtl = locale === "ar";
+  const stockLeft = Math.max(5, Math.min(15, Math.round(product.inventory / 6)));
+  const stockPercent = Math.max(14, Math.min(100, (stockLeft / 20) * 100));
+  const formattedTime = useMemo(() => {
+    const minutes = Math.floor(timeLeft / 60).toString().padStart(2, "0");
+    const seconds = (timeLeft % 60).toString().padStart(2, "0");
+    return `${minutes}:${seconds}`;
+  }, [timeLeft]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setTimeLeft((value) => Math.max(0, value - 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  function startCheckoutTracking() {
+    if (checkoutStarted) return;
+    setCheckoutStarted(true);
+    trackEvent("InitiateCheckout", {
+      contentId: product.id,
+      contentName: product.name,
+      value: price,
+      currency: country.currency,
+    });
+  }
 
   return (
-    <section className="container-shell grid gap-10 py-10 lg:grid-cols-[1.1fr_0.9fr]">
-      <div className="grid gap-4 md:grid-cols-[96px_1fr]">
+    <section className="container-shell grid gap-8 py-6 lg:grid-cols-[1.05fr_0.95fr] lg:py-10">
+      <div className="order-2 grid gap-4 md:grid-cols-[96px_1fr] lg:order-1">
         <div className="order-2 flex gap-3 md:order-1 md:flex-col">
           {product.images.map((item) => (
             <button
@@ -44,46 +75,197 @@ export function ProductDetail({
         </div>
       </div>
 
-      <div className="self-center">
+      <div className="order-1 self-start lg:order-2">
         <Badge>{product.category}</Badge>
-        <h1 className="mt-5 text-4xl font-semibold tracking-tight md:text-6xl">
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-6xl">
           {locale === "ar" ? product.nameAr : product.name}
         </h1>
-        <div className="mt-5 flex items-center gap-3">
-          <span className="text-2xl font-semibold">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <span className="text-3xl font-bold text-accent">
             {formatMoney(price, country.currency, locale)}
           </span>
-          <span className="flex items-center gap-1 text-accent">
+          <span className="flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1 text-accent">
             <Star className="h-4 w-4 fill-current" />
             {product.rating} ({product.reviews})
           </span>
         </div>
-        <p className="mt-6 text-lg leading-8 text-muted-foreground">
+        <p className="mt-4 text-base leading-8 text-muted-foreground md:text-lg">
           {product.description}
         </p>
 
         <Variant title="Color" values={product.colors} selected={color} onSelect={setColor} />
         <Variant title="Size" values={product.sizes} selected={size} onSelect={setSize} />
 
+        <div className="mt-6 grid gap-3 rounded-[1.75rem] border border-accent/30 bg-accent/10 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-sm font-bold text-accent">
+              <Clock3 className="h-4 w-4" />
+              {rtl ? "ينتهي العرض خلال" : "Offer ends in"}
+            </span>
+            <span className="rounded-full bg-accent px-4 py-1 font-mono text-lg font-black text-accent-foreground">
+              {formattedTime}
+            </span>
+          </div>
+          <div>
+            <div className="mb-2 flex justify-between text-sm font-semibold">
+              <span>{rtl ? `متبقي ${stockLeft} قطع فقط في المخزن` : `Only ${stockLeft} pieces left in stock`}</span>
+              <span>{stockLeft}/20</span>
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-background">
+              <div className="h-full rounded-full bg-gradient-to-r from-red-500 to-accent" style={{ width: `${stockPercent}%` }} />
+            </div>
+          </div>
+        </div>
+
+        <QuickOrderForm
+          locale={locale}
+          product={product}
+          color={color}
+          size={size}
+          price={price}
+          currency={country.currency}
+          isSubmitting={isSubmitting}
+          setIsSubmitting={setIsSubmitting}
+          onFocus={startCheckoutTracking}
+        />
+
         <Button
           variant="gold"
           size="lg"
-          className="mt-8 w-full"
+          className="mt-4 w-full"
           onClick={() => {
             addItem({ product, quantity: 1, color, size });
-            toast.success("Added to cart");
+            toast.success(rtl ? "تمت الإضافة للسلة" : "Added to cart");
           }}
         >
-          Add to cart
+          {rtl ? "أضف للسلة بدل الطلب السريع" : "Add to cart instead"}
         </Button>
 
-        <div className="mt-10 grid gap-4 rounded-[2rem] bg-muted p-6 text-sm text-muted-foreground">
-          <p>Complimentary gift packaging on orders above $250.</p>
-          <p>Regional tax and shipping are calculated automatically at checkout.</p>
-          <p>Secure Stripe payments in USD, EUR, SAR, AED and MAD.</p>
+        <div className="mt-6 grid gap-3 rounded-[2rem] bg-muted p-5 text-sm text-muted-foreground sm:grid-cols-3">
+          <TrustItem icon={<Truck className="h-5 w-5" />} text={rtl ? "توصيل مجاني" : "Free delivery"} />
+          <TrustItem icon={<Banknote className="h-5 w-5" />} text={rtl ? "الدفع عند الاستلام" : "Cash on delivery"} />
+          <TrustItem icon={<RotateCcw className="h-5 w-5" />} text={rtl ? "استبدال واسترجاع" : "Easy returns"} />
         </div>
       </div>
     </section>
+  );
+}
+
+function QuickOrderForm({
+  locale,
+  product,
+  color,
+  size,
+  price,
+  currency,
+  isSubmitting,
+  setIsSubmitting,
+  onFocus,
+}: {
+  locale: string;
+  product: Product;
+  color: string;
+  size: string;
+  price: number;
+  currency: string;
+  isSubmitting: boolean;
+  setIsSubmitting: (value: boolean) => void;
+  onFocus: () => void;
+}) {
+  const rtl = locale === "ar";
+  const [phone, setPhone] = useState("+966 ");
+
+  async function submitOrder(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    const formData = new FormData(event.currentTarget);
+    const payload = {
+      productId: product.id,
+      productName: product.name,
+      value: price,
+      currency,
+      fullName: String(formData.get("fullName") ?? ""),
+      phone,
+      city: String(formData.get("city") ?? ""),
+      countryCode: "SA",
+      color,
+      size,
+    };
+
+    try {
+      const response = await fetch("/api/cod-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error ?? "Order failed");
+      }
+
+      trackEvent("Purchase", {
+        contentId: product.id,
+        contentName: product.name,
+        value: price,
+        currency,
+        phone,
+        city: payload.city,
+      });
+      window.location.href = `/${locale}/checkout/success?cod=1&order=${data.orderNumber}&product=${product.slug}`;
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : rtl ? "تعذر إرسال الطلب" : "Could not submit order");
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <form
+      id="quick-order"
+      onFocus={onFocus}
+      onSubmit={submitOrder}
+      className="mt-6 rounded-[2rem] border border-accent/35 bg-card p-5 shadow-xl shadow-accent/10"
+    >
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold">{rtl ? "اطلب الآن - الدفع عند الاستلام" : "Order now - Cash on delivery"}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {rtl ? "املأ 3 حقول فقط وسيتصل بك فريقنا للتأكيد." : "Fill only 3 fields. Our team calls to confirm."}
+          </p>
+        </div>
+        <ShieldCheck className="h-8 w-8 text-accent" />
+      </div>
+      <div className="grid gap-3">
+        <Input name="fullName" required placeholder={rtl ? "الاسم الكامل" : "Full name"} />
+        <Input
+          name="phone"
+          required
+          inputMode="tel"
+          value={phone}
+          onChange={(event) => {
+            const value = event.target.value;
+            setPhone(value.startsWith("+") ? value : `+966 ${value}`);
+          }}
+          placeholder={rtl ? "رقم الهاتف" : "Phone number"}
+          className="ltr-only"
+        />
+        <Input name="city" required placeholder={rtl ? "المدينة / المنطقة" : "City / region"} />
+      </div>
+      <Button type="submit" variant="gold" size="lg" className="mt-4 w-full bg-orange-500 text-white hover:bg-orange-600" disabled={isSubmitting}>
+        <Phone className="h-5 w-5" />
+        {isSubmitting ? (rtl ? "جاري إرسال الطلب..." : "Sending order...") : rtl ? "اضغط هنا للطلب" : "Click here to order"}
+      </Button>
+    </form>
+  );
+}
+
+function TrustItem({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="flex items-center gap-2 rounded-2xl bg-background/70 p-3 font-semibold">
+      <span className="text-accent">{icon}</span>
+      <span>{text}</span>
+    </div>
   );
 }
 
