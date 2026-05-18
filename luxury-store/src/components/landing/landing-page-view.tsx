@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { Banknote, CheckCircle2, Clock3, MessageCircle, Phone, ShieldCheck, Star, Truck } from "lucide-react";
+import { Banknote, CheckCircle2, MessageCircle, Phone, ShieldCheck, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 import type { LandingPage, Product } from "@/lib/data";
 import { resolveCountry } from "@/lib/regions";
