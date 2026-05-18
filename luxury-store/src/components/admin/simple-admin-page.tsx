@@ -1,4 +1,10 @@
-import { AdminPanel, AdminShell, EmptyAction, StatusBadge } from "./admin-shell";
+import {
+  AdminActionLink,
+  AdminPanel,
+  AdminShell,
+  EmptyAction,
+  StatusBadge,
+} from "./admin-shell";
 import { adminReferenceData } from "@/lib/admin-data";
 import { getAdminCopy } from "@/lib/admin-i18n";
 import { supportedCountries } from "@/lib/regions";
@@ -12,7 +18,11 @@ export async function CategoriesAdminPage({
 }) {
   const copy = getAdminCopy(locale);
   return (
-    <AdminShell title={copy.nav.categories} locale={locale} actions={<Button variant="gold">{copy.add}</Button>}>
+    <AdminShell
+      title={copy.nav.categories}
+      locale={locale}
+      actions={<AdminActionLink href="#new-category">{copy.add}</AdminActionLink>}
+    >
       <AdminPanel>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {adminReferenceData.categories.map((category) => (
@@ -27,6 +37,20 @@ export async function CategoriesAdminPage({
           ))}
         </div>
       </AdminPanel>
+      <AdminPanel
+        title={locale === "ar" ? "إضافة تصنيف جديد" : "Add new category"}
+        className="scroll-mt-28"
+      >
+        <form id="new-category" className="grid gap-4 md:grid-cols-2">
+          <Input placeholder={locale === "ar" ? "اسم التصنيف بالإنجليزية" : "Category name in English"} />
+          <Input placeholder={locale === "ar" ? "اسم التصنيف بالعربية" : "Category name in Arabic"} />
+          <Input placeholder="Slug" />
+          <Textarea placeholder={locale === "ar" ? "وصف التصنيف" : "Category description"} />
+          <Button variant="gold" className="md:col-span-2">
+            {copy.add}
+          </Button>
+        </form>
+      </AdminPanel>
     </AdminShell>
   );
 }
@@ -34,7 +58,11 @@ export async function CategoriesAdminPage({
 export async function CouponsAdminPage({ locale }: { locale: string }) {
   const copy = getAdminCopy(locale);
   return (
-    <AdminShell title={copy.nav.coupons} locale={locale} actions={<Button variant="gold">{copy.add}</Button>}>
+    <AdminShell
+      title={copy.nav.coupons}
+      locale={locale}
+      actions={<AdminActionLink href="#new-coupon">{copy.add}</AdminActionLink>}
+    >
       <AdminPanel>
         <div className="grid gap-4">
           {adminReferenceData.coupons.map((coupon) => (
@@ -46,6 +74,23 @@ export async function CouponsAdminPage({ locale }: { locale: string }) {
             </div>
           ))}
         </div>
+      </AdminPanel>
+      <AdminPanel
+        title={locale === "ar" ? "إضافة كوبون جديد" : "Add new coupon"}
+        className="scroll-mt-28"
+      >
+        <form id="new-coupon" className="grid gap-4 md:grid-cols-2">
+          <Input placeholder={locale === "ar" ? "كود الكوبون" : "Coupon code"} />
+          <Input placeholder={locale === "ar" ? "نسبة الخصم" : "Discount percentage"} type="number" />
+          <Input placeholder={locale === "ar" ? "تاريخ الانتهاء" : "Expiration date"} type="date" />
+          <select className="h-11 rounded-2xl border border-black/10 bg-white px-4">
+            <option>{locale === "ar" ? "نشط" : "Active"}</option>
+            <option>{locale === "ar" ? "مسودة" : "Draft"}</option>
+          </select>
+          <Button variant="gold" className="md:col-span-2">
+            {copy.add}
+          </Button>
+        </form>
       </AdminPanel>
     </AdminShell>
   );

@@ -1,5 +1,10 @@
 import { Download, Filter, Search, Trash2 } from "lucide-react";
-import { AdminPanel, AdminShell, StatusBadge } from "@/components/admin/admin-shell";
+import {
+  AdminActionLink,
+  AdminPanel,
+  AdminShell,
+  StatusBadge,
+} from "@/components/admin/admin-shell";
 import { getAdminDashboardData } from "@/lib/admin-data";
 import { getAdminCopy } from "@/lib/admin-i18n";
 import { Button } from "@/components/ui/button";
@@ -31,7 +36,7 @@ export default async function AdminProductsPage({
             <Download className="h-4 w-4" />
             {copy.exportCsv}
           </Button>
-          <Button variant="gold">{copy.add}</Button>
+          <AdminActionLink href="/admin/products/new">{copy.add}</AdminActionLink>
         </>
       }
     >
