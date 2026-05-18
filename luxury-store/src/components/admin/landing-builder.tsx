@@ -1,8 +1,8 @@
-import { ArrowUpDown, Eye, Film, GripVertical, LayoutTemplate, Plus, Save, Settings2 } from "lucide-react";
+import { ArrowUpDown, Eye, Film, GripVertical, LayoutTemplate, Save, Settings2 } from "lucide-react";
 import { AdminActionLink, AdminPanel, AdminShell, StatusBadge } from "@/components/admin/admin-shell";
 import { Link } from "@/i18n/routing";
 import { getAdminCopy } from "@/lib/admin-i18n";
-import { getLandingPageBySlug, landingPages, landingSectionTemplates, products } from "@/lib/data";
+import { getLandingPageBySlug, landingSectionTemplates, products } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 
