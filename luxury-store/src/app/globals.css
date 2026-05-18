@@ -89,3 +89,18 @@ body {
 [dir="rtl"] .ltr-only {
   direction: ltr;
 }
+
+/* Admin pages use a light content surface even when the store theme is dark. */
+.admin-surface input,
+.admin-surface textarea,
+.admin-surface select {
+  background-color: #ffffff !important;
+  color: #15120b !important;
+  border-color: #d8c7a6 !important;
+}
+
+.admin-surface input::placeholder,
+.admin-surface textarea::placeholder {
+  color: #7b705d !important;
+  opacity: 1;
+}

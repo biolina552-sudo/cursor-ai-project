@@ -66,7 +66,7 @@ export function AdminShell({
   return (
     <section
       dir={rtl ? "rtl" : "ltr"}
-      className="min-h-screen bg-[#f7f4ed] text-[#17130c] dark:bg-[#f7f4ed] dark:text-[#17130c]"
+      className="admin-surface min-h-screen bg-[#f7f4ed] text-[#17130c] dark:bg-[#f7f4ed] dark:text-[#17130c]"
     >
       <div className="flex">
         <aside
