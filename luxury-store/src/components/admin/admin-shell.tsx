@@ -18,6 +18,7 @@ import {
   Package,
   Settings,
   Star,
+  Store,
   Truck,
   UsersRound,
 } from "lucide-react";
@@ -149,6 +150,12 @@ export function AdminShell({
 
               <div className="flex flex-wrap items-center gap-2">
                 {actions}
+                <Link href="/">
+                  <Button variant="gold">
+                    <Store className="h-4 w-4" />
+                    {copy.viewStore}
+                  </Button>
+                </Link>
                 <Button
                   type="button"
                   variant="outline"
