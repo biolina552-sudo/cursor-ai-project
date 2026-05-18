@@ -2,9 +2,7 @@ import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { AppProviders } from "@/components/app-providers";
-import { CartDrawer } from "@/components/cart/cart-drawer";
-import { Footer } from "@/components/layout/footer";
-import { Header } from "@/components/layout/header";
+import { SiteChrome } from "@/components/layout/site-chrome";
 import { isRtl, routing } from "@/i18n/routing";
 
 export function generateStaticParams() {
@@ -28,10 +26,7 @@ export default async function LocaleLayout({
   return (
     <AppProviders locale={locale} messages={messages}>
       <div dir={isRtl(locale) ? "rtl" : "ltr"} className="min-h-screen">
-        <Header locale={locale} />
-        <main>{children}</main>
-        <Footer locale={locale} />
-        <CartDrawer locale={locale} />
+        <SiteChrome locale={locale}>{children}</SiteChrome>
       </div>
     </AppProviders>
   );
