@@ -1,0 +1,63 @@
+{
+  "brand": {
+    "name": "Aurum",
+    "tagline": "Luxury commerce for modern collectors"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "login": "Login",
+    "cart": "Cart"
+  },
+  "home": {
+    "eyebrow": "New season collection",
+    "title": "Premium essentials curated for five luxury markets.",
+    "description": "A multilingual, multi-currency storefront with regional tax, shipping and payment flows built for refined ecommerce experiences.",
+    "shopNow": "Shop collection",
+    "admin": "View admin suite",
+    "featured": "Featured products",
+    "categories": "Shop by category",
+    "testimonials": "Loved by discerning clients",
+    "newsletter": "Join the private list"
+  },
+  "products": {
+    "title": "Products",
+    "description": "Search, filter and sort a curated catalog with regional prices.",
+    "search": "Search products",
+    "sort": "Sort",
+    "category": "Category",
+    "all": "All",
+    "addToCart": "Add to cart",
+    "view": "View details"
+  },
+  "checkout": {
+    "title": "Secure checkout",
+    "address": "Shipping address",
+    "shipping": "Shipping method",
+    "payment": "Payment",
+    "pay": "Continue to Stripe"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Create account",
+    "forgot": "Reset password",
+    "email": "Email",
+    "password": "Password"
+  },
+  "dashboard": {
+    "title": "Account dashboard",
+    "orders": "Orders",
+    "profile": "Profile",
+    "addresses": "Addresses"
+  },
+  "admin": {
+    "title": "Admin dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "customers": "Customers",
+    "analytics": "Analytics",
+    "shipping": "Countries & shipping"
+  }
+}

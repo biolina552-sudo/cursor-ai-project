@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+model User {
+  id          String    @id @default(cuid())
+  supabaseId  String?   @unique
+  email       String    @unique
+  name        String?
+  role        Role      @default(CUSTOMER)
+  orders      Order[]
+  reviews     Review[]
+  addresses   Address[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  nameAr      String
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  nameAr      String
+  description String
+  priceUsd    Decimal     @db.Decimal(10, 2)
+  sku         String      @unique
+  inventory   Int         @default(0)
+  images      String[]
+  colors      String[]
+  sizes       String[]
+  active      Boolean     @default(true)
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  reviews     Review[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Order {
+  id                    String      @id @default(cuid())
+  orderNumber           String      @unique
+  userId                String?
+  user                  User?       @relation(fields: [userId], references: [id])
+  email                 String
+  status                OrderStatus @default(PENDING)
+  currency              String
+  subtotal              Decimal     @db.Decimal(10, 2)
+  tax                   Decimal     @db.Decimal(10, 2)
+  shipping              Decimal     @db.Decimal(10, 2)
+  total                 Decimal     @db.Decimal(10, 2)
+  countryCode           String
+  stripeCheckoutSession String?
+  items                 OrderItem[]
+  shippingAddressId     String?
+  shippingAddress       Address?    @relation(fields: [shippingAddressId], references: [id])
+  couponId              String?
+  coupon                Coupon?     @relation(fields: [couponId], references: [id])
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  color     String?
+  size      String?
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  title     String
+  body      String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Address {
+  id          String  @id @default(cuid())
+  userId      String?
+  user        User?   @relation(fields: [userId], references: [id])
+  fullName    String
+  line1       String
+  line2       String?
+  city        String
+  region      String?
+  postalCode  String?
+  phone       String
+  countryCode String
+  orders      Order[]
+}
+
+model Country {
+  code          String         @id
+  name          String
+  nameAr        String
+  currency      String
+  taxRate       Decimal        @db.Decimal(5, 4)
+  shippingZones ShippingZone[]
+}
+
+model ShippingZone {
+  id          String  @id @default(cuid())
+  name        String
+  countryCode String
+  country     Country @relation(fields: [countryCode], references: [code], onDelete: Cascade)
+  baseRate    Decimal @db.Decimal(10, 2)
+  expressRate Decimal @db.Decimal(10, 2)
+  freeOver    Decimal @db.Decimal(10, 2)
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  description String?
+  percentOff  Int?
+  amountOff   Decimal? @db.Decimal(10, 2)
+  currency    String?
+  active      Boolean  @default(true)
+  expiresAt   DateTime?
+  orders      Order[]
+}
