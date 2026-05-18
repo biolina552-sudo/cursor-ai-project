@@ -1,4 +1,4 @@
-import { Copy, ExternalLink, Plus } from "lucide-react";
+import { Copy, Edit3, ExternalLink, Plus } from "lucide-react";
 import { AdminActionLink, AdminPanel, AdminShell, StatusBadge } from "@/components/admin/admin-shell";
 import { Link } from "@/i18n/routing";
 import { landingPages } from "@/lib/data";
@@ -20,7 +20,7 @@ export default async function AdminLandingPages({
       title={copy.nav.landing}
       locale={locale}
       actions={
-        <AdminActionLink href="#new-landing">
+        <AdminActionLink href="/admin/landing-pages/new">
           <Plus className="h-4 w-4" />
           {copy.add}
         </AdminActionLink>
@@ -56,6 +56,12 @@ export default async function AdminLandingPages({
                         <Button size="sm" variant="outline">
                           <ExternalLink className="h-4 w-4" />
                           {rtl ? "فتح" : "Open"}
+                        </Button>
+                      </Link>
+                      <Link href={`/admin/landing-pages/${page.slug}/edit`}>
+                        <Button size="sm" variant="gold">
+                          <Edit3 className="h-4 w-4" />
+                          {rtl ? "بناء / تعديل" : "Build / Edit"}
                         </Button>
                       </Link>
                       <Button size="sm" variant="outline">

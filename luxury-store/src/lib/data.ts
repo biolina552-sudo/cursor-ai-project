@@ -230,6 +230,65 @@ export const landingPages: LandingPage[] = [
   },
 ];
 
+export const landingSectionTemplates = [
+  {
+    id: "hero",
+    name: "Hero + offer",
+    nameAr: "البطل + العرض",
+    description: "Headline, product image, price, rating and primary CTA above the fold.",
+    descriptionAr: "العنوان، صورة المنتج، السعر، التقييم وزر الطلب فوق الصفحة.",
+  },
+  {
+    id: "video",
+    name: "Sales video",
+    nameAr: "فيديو البيع",
+    description: "Embed TikTok, YouTube, UGC or product demonstration video.",
+    descriptionAr: "إضافة فيديو TikTok أو YouTube أو تجربة عميل أو شرح المنتج.",
+  },
+  {
+    id: "benefits",
+    name: "Benefits grid",
+    nameAr: "شبكة المزايا",
+    description: "Short conversion-focused benefits with icons.",
+    descriptionAr: "مزايا قصيرة بأيقونات لرفع معدل التحويل.",
+  },
+  {
+    id: "before-after",
+    name: "Before / After",
+    nameAr: "قبل / بعد",
+    description: "Comparison section for visual proof and problem/solution products.",
+    descriptionAr: "قسم مقارنة لإظهار النتيجة قبل وبعد.",
+  },
+  {
+    id: "testimonials",
+    name: "Testimonials",
+    nameAr: "تقييمات العملاء",
+    description: "Customer quotes, review screenshots and star ratings.",
+    descriptionAr: "آراء العملاء وصور التقييمات والنجوم.",
+  },
+  {
+    id: "faq",
+    name: "FAQ",
+    nameAr: "الأسئلة الشائعة",
+    description: "Handle objections about delivery, COD, returns and product use.",
+    descriptionAr: "معالجة اعتراضات التوصيل والدفع والاسترجاع وطريقة الاستخدام.",
+  },
+  {
+    id: "cod-form",
+    name: "COD form",
+    nameAr: "استمارة الدفع عند الاستلام",
+    description: "Three-field quick order form with tracking events.",
+    descriptionAr: "استمارة طلب من 3 حقول مع أحداث التتبع.",
+  },
+  {
+    id: "upsell",
+    name: "Upsell block",
+    nameAr: "عرض إضافي",
+    description: "Post-click or post-purchase offer to increase AOV.",
+    descriptionAr: "عرض إضافي لرفع متوسط قيمة الطلب.",
+  },
+];
+
 export function getProductBySlug(slug: string) {
   return products.find((product) => product.slug === slug);
 }
