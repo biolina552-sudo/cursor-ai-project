@@ -4,6 +4,7 @@ import { supportedCountries } from "./regions";
 
 export type AdminProduct = {
   id: string;
+  slug: string;
   sku: string;
   nameEn: string;
   nameAr: string;
@@ -60,6 +61,7 @@ export type AdminDashboardData = {
 
 const sampleProducts: AdminProduct[] = products.map((product, index) => ({
   id: product.id,
+  slug: product.slug,
   sku: product.id.toUpperCase(),
   nameEn: product.name,
   nameAr: product.nameAr,

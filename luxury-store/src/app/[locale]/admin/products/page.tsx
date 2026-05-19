@@ -7,6 +7,7 @@ import {
 } from "@/components/admin/admin-shell";
 import { getAdminDashboardData } from "@/lib/admin-data";
 import { getAdminCopy } from "@/lib/admin-i18n";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 
@@ -91,7 +92,11 @@ export default async function AdminProductsPage({
                   <td>{product.priceEur}</td>
                   <td>{product.stock}</td>
                   <td><StatusBadge status={product.status} /></td>
-                  <td><Button size="sm" variant="outline">{copy.edit}</Button></td>
+                  <td>
+                    <Link href={`/admin/products/${product.slug}/edit`}>
+                      <Button size="sm" variant="outline">{copy.edit}</Button>
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
