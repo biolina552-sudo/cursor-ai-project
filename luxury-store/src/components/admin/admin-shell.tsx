@@ -13,7 +13,6 @@ import {
   Coins,
   FolderTree,
   Globe2,
-  Home,
   LayoutDashboard,
   Megaphone,
   LogOut,
