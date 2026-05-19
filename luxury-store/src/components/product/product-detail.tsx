@@ -6,7 +6,8 @@ import { Banknote, Clock3, Phone, RotateCcw, ShieldCheck, Star, Truck } from "lu
 import { toast } from "sonner";
 import type { Product } from "@/lib/data";
 import { useCartStore } from "@/lib/cart-store";
-import { resolveCountry } from "@/lib/regions";
+import { convertFromUsd, resolveCountry } from "@/lib/regions";
+import { storefrontSettings } from "@/lib/store-settings";
 import { formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,8 +28,9 @@ export function ProductDetail({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutStarted, setCheckoutStarted] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
-  const country = resolveCountry("SA");
-  const price = product.priceUsd * (country.currency === "SAR" ? 3.75 : 1);
+  const country = resolveCountry(storefrontSettings.defaultCountryCode);
+  const currency = storefrontSettings.defaultCurrency;
+  const price = convertFromUsd(product.priceUsd, currency);
   const rtl = locale === "ar";
   const stockLeft = Math.max(5, Math.min(15, Math.round(product.inventory / 6)));
   const stockPercent = Math.max(14, Math.min(100, (stockLeft / 20) * 100));
@@ -52,7 +54,7 @@ export function ProductDetail({
       contentId: product.id,
       contentName: product.name,
       value: price,
-      currency: country.currency,
+      currency,
     });
   }
 
@@ -82,7 +84,7 @@ export function ProductDetail({
         </h1>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="text-3xl font-bold text-accent">
-            {formatMoney(price, country.currency, locale)}
+            {formatMoney(price, currency, locale)}
           </span>
           <span className="flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1 text-accent">
             <Star className="h-4 w-4 fill-current" />
@@ -123,7 +125,8 @@ export function ProductDetail({
           color={color}
           size={size}
           price={price}
-          currency={country.currency}
+          currency={currency}
+          countryCode={country.code}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
           onFocus={startCheckoutTracking}
@@ -158,6 +161,7 @@ function QuickOrderForm({
   size,
   price,
   currency,
+  countryCode,
   isSubmitting,
   setIsSubmitting,
   onFocus,
@@ -168,6 +172,7 @@ function QuickOrderForm({
   size: string;
   price: number;
   currency: string;
+  countryCode: string;
   isSubmitting: boolean;
   setIsSubmitting: (value: boolean) => void;
   onFocus: () => void;
@@ -189,7 +194,7 @@ function QuickOrderForm({
       fullName: String(formData.get("fullName") ?? ""),
       phone,
       city: String(formData.get("city") ?? ""),
-      countryCode: "SA",
+      countryCode,
       color,
       size,
     };

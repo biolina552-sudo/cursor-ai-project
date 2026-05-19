@@ -8,6 +8,7 @@ import {
 import { adminReferenceData } from "@/lib/admin-data";
 import { getAdminCopy } from "@/lib/admin-i18n";
 import { supportedCountries } from "@/lib/regions";
+import { storefrontSettings } from "@/lib/store-settings";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 
@@ -121,6 +122,40 @@ export async function StoreSettingsAdminPage({ locale }: { locale: string }) {
   const copy = getAdminCopy(locale);
   return (
     <AdminShell title={copy.settings.title} locale={locale}>
+      <AdminPanel title={locale === "ar" ? "إعدادات اللغة والعملة العامة" : "Global language and currency"}>
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="grid gap-2 text-sm font-semibold">
+            {locale === "ar" ? "لغة المتجر الافتراضية" : "Default storefront language"}
+            <select defaultValue={storefrontSettings.defaultLocale} className="h-11 rounded-2xl border border-black/10 bg-white px-4">
+              <option value="ar">العربية</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+          <label className="grid gap-2 text-sm font-semibold">
+            {locale === "ar" ? "عملة المتجر الافتراضية" : "Default storefront currency"}
+            <select defaultValue={storefrontSettings.defaultCurrency} className="h-11 rounded-2xl border border-black/10 bg-white px-4">
+              {["SAR", "AED", "MAD", "USD", "EUR"].map((currency) => (
+                <option key={currency} value={currency}>
+                  {currency}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex items-center gap-3 rounded-2xl border border-black/10 p-4">
+            <input type="checkbox" defaultChecked={storefrontSettings.showPublicLanguageSwitcher} />
+            <span>{locale === "ar" ? "إظهار مبدّل اللغة للزوار" : "Show language switcher to visitors"}</span>
+          </label>
+          <label className="flex items-center gap-3 rounded-2xl border border-black/10 p-4">
+            <input type="checkbox" defaultChecked={storefrontSettings.showPublicCurrencySwitcher} />
+            <span>{locale === "ar" ? "إظهار مبدّل العملة للزوار" : "Show currency switcher to visitors"}</span>
+          </label>
+          <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-950 md:col-span-2">
+            {locale === "ar"
+              ? "حاليًا إعدادات الواجهة مضبوطة مركزيًا من ملف المتجر: اللغة العربية وعملة SAR فقط، ولا تظهر للزائر أزرار اختيار اللغة أو العملة."
+              : "Current storefront settings are centralized: Arabic and SAR only, with public language/currency switchers hidden."}
+          </div>
+        </div>
+      </AdminPanel>
       <AdminPanel>
         <form className="grid gap-5 lg:grid-cols-2">
           <label className="grid gap-2 text-sm font-semibold">

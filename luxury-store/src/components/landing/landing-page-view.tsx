@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Banknote, CheckCircle2, MessageCircle, Phone, ShieldCheck, Star, Truck } from "lucide-react";
 import { toast } from "sonner";
 import type { LandingPage, Product } from "@/lib/data";
-import { resolveCountry } from "@/lib/regions";
+import { convertFromUsd, resolveCountry } from "@/lib/regions";
+import { storefrontSettings } from "@/lib/store-settings";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +22,9 @@ export function LandingPageView({
   locale: string;
 }) {
   const rtl = locale === "ar";
-  const country = resolveCountry("SA");
-  const price = product.priceUsd * 3.75;
+  const country = resolveCountry(storefrontSettings.defaultCountryCode);
+  const currency = storefrontSettings.defaultCurrency;
+  const price = convertFromUsd(product.priceUsd, currency);
   const oldPrice = Math.round(price * 1.35);
   const [timeLeft, setTimeLeft] = useState(9 * 60 + 58);
   const [phone, setPhone] = useState("+966 ");
@@ -47,7 +49,7 @@ export function LandingPageView({
       contentId: product.id,
       contentName: product.name,
       value: price,
-      currency: country.currency,
+      currency,
     });
   }
 
@@ -60,7 +62,7 @@ export function LandingPageView({
       productId: product.id,
       productName: product.name,
       value: price,
-      currency: country.currency,
+      currency,
       fullName: String(formData.get("fullName") ?? ""),
       phone,
       city: String(formData.get("city") ?? ""),
@@ -81,7 +83,7 @@ export function LandingPageView({
         contentId: product.id,
         contentName: product.name,
         value: price,
-        currency: country.currency,
+        currency,
         phone,
         city: payload.city,
       });
@@ -111,10 +113,10 @@ export function LandingPageView({
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <span className="text-4xl font-black text-[#d9ad51]">
-                {formatMoney(price, country.currency, locale)}
+                {formatMoney(price, currency, locale)}
               </span>
               <span className="text-xl text-white/45 line-through">
-                {formatMoney(oldPrice, country.currency, locale)}
+                {formatMoney(oldPrice, currency, locale)}
               </span>
               <span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[#f5d994]">
                 <Star className="h-4 w-4 fill-current" />

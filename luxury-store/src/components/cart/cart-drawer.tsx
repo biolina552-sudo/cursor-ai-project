@@ -7,20 +7,22 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useCartStore } from "@/lib/cart-store";
 import { convertFromUsd, resolveCountry } from "@/lib/regions";
+import { storefrontSettings } from "@/lib/store-settings";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export function CartDrawer({ locale }: { locale: string }) {
   const t = useTranslations("nav");
   const { items, isOpen, closeCart, updateQuantity, removeItem } = useCartStore();
-  const country = resolveCountry("SA");
+  const country = resolveCountry(storefrontSettings.defaultCountryCode);
+  const currency = storefrontSettings.defaultCurrency;
   const subtotal = useMemo(
     () =>
       items.reduce(
-        (sum, item) => sum + convertFromUsd(item.product.priceUsd, country.currency) * item.quantity,
+        (sum, item) => sum + convertFromUsd(item.product.priceUsd, currency) * item.quantity,
         0,
       ),
-    [items, country.currency],
+    [items, currency],
   );
   const tax = subtotal * country.taxRate;
   const shipping = subtotal > 500 ? 0 : country.shippingFrom;
@@ -93,12 +95,12 @@ export function CartDrawer({ locale }: { locale: string }) {
         )}
 
         <div className="mt-8 space-y-3 rounded-3xl bg-muted p-5 text-sm">
-          <Summary label="Subtotal" value={formatMoney(subtotal, country.currency, locale)} />
-          <Summary label="Tax" value={formatMoney(tax, country.currency, locale)} />
-          <Summary label="Shipping" value={formatMoney(shipping, country.currency, locale)} />
+          <Summary label="Subtotal" value={formatMoney(subtotal, currency, locale)} />
+          <Summary label="Tax" value={formatMoney(tax, currency, locale)} />
+          <Summary label="Shipping" value={formatMoney(shipping, currency, locale)} />
           <Summary
             label="Total"
-            value={formatMoney(total, country.currency, locale)}
+            value={formatMoney(total, currency, locale)}
             strong
           />
         </div>

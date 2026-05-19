@@ -6,6 +6,7 @@ import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useCartStore } from "@/lib/cart-store";
+import { storefrontSettings } from "@/lib/store-settings";
 
 export function Header({ locale }: { locale: string }) {
   const t = useTranslations("nav");
@@ -41,13 +42,15 @@ export function Header({ locale }: { locale: string }) {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.replace(pathname, { locale: targetLocale })}
-          >
-            {targetLocale.toUpperCase()}
-          </Button>
+          {storefrontSettings.showPublicLanguageSwitcher ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.replace(pathname, { locale: targetLocale })}
+            >
+              {targetLocale.toUpperCase()}
+            </Button>
+          ) : null}
           <ThemeToggle />
           <Link href="/auth/login" className="hidden md:inline-flex">
             <Button variant="outline" size="sm">

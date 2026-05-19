@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { storefrontSettings } from "@/lib/store-settings";
 
 export default function Home() {
-  redirect("/en");
+  redirect(`/${storefrontSettings.defaultLocale}`);
 }

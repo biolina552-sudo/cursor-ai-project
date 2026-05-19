@@ -7,7 +7,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import type { Product } from "@/lib/data";
 import { useCartStore } from "@/lib/cart-store";
-import { resolveCountry } from "@/lib/regions";
+import { convertFromUsd } from "@/lib/regions";
+import { storefrontSettings } from "@/lib/store-settings";
 import { formatMoney } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -20,8 +21,8 @@ export function ProductCard({
 }) {
   const t = useTranslations("products");
   const addItem = useCartStore((state) => state.addItem);
-  const country = resolveCountry("SA");
-  const price = product.priceUsd * (country.currency === "SAR" ? 3.75 : 1);
+  const currency = storefrontSettings.defaultCurrency;
+  const price = convertFromUsd(product.priceUsd, currency);
 
   return (
     <motion.article
@@ -56,7 +57,7 @@ export function ProductCard({
         </div>
         <div className="flex items-center justify-between">
           <span className="font-semibold">
-            {formatMoney(price, country.currency, locale)}
+            {formatMoney(price, currency, locale)}
           </span>
           <Button
             variant="gold"
