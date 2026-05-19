@@ -12,6 +12,7 @@ const codOrderSchema = z.object({
   phone: z.string().min(7),
   city: z.string().min(2),
   countryCode: z.string().min(2),
+  paymentMethod: z.string().optional(),
   color: z.string().optional(),
   size: z.string().optional(),
 });
@@ -52,6 +53,7 @@ async function persistOrder(order: z.infer<typeof codOrderSchema> & { orderNumbe
     value: order.value,
     variant_color: order.color,
     variant_size: order.size,
+    payment_method: order.paymentMethod ?? "cod",
     status: "pending_confirmation",
   });
 

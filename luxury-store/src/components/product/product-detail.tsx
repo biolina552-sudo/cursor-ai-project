@@ -2,12 +2,26 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { Banknote, Clock3, Phone, RotateCcw, ShieldCheck, Star, Truck } from "lucide-react";
+import {
+  Banknote,
+  CheckCircle2,
+  Clock3,
+  CreditCard,
+  Landmark,
+  PackageCheck,
+  Phone,
+  RotateCcw,
+  ShieldCheck,
+  Smartphone,
+  Star,
+  Truck,
+  WalletCards,
+} from "lucide-react";
 import { toast } from "sonner";
 import type { Product } from "@/lib/data";
 import { useCartStore } from "@/lib/cart-store";
 import { convertFromUsd, resolveCountry } from "@/lib/regions";
-import { storefrontSettings } from "@/lib/store-settings";
+import { getEnabledPaymentMethods, storefrontSettings } from "@/lib/store-settings";
 import { formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +41,7 @@ export function ProductDetail({
   const [timeLeft, setTimeLeft] = useState(12 * 60 + 43);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [checkoutStarted, setCheckoutStarted] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const addItem = useCartStore((state) => state.addItem);
   const country = resolveCountry(storefrontSettings.defaultCountryCode);
   const currency = storefrontSettings.defaultCurrency;
@@ -119,6 +134,12 @@ export function ProductDetail({
           </div>
         </div>
 
+        <PaymentMethodsPanel
+          locale={locale}
+          selected={paymentMethod}
+          onSelect={setPaymentMethod}
+        />
+
         <QuickOrderForm
           locale={locale}
           product={product}
@@ -127,6 +148,7 @@ export function ProductDetail({
           price={price}
           currency={currency}
           countryCode={country.code}
+          paymentMethod={paymentMethod}
           isSubmitting={isSubmitting}
           setIsSubmitting={setIsSubmitting}
           onFocus={startCheckoutTracking}
@@ -149,8 +171,83 @@ export function ProductDetail({
           <TrustItem icon={<Banknote className="h-5 w-5" />} text={rtl ? "الدفع عند الاستلام" : "Cash on delivery"} />
           <TrustItem icon={<RotateCcw className="h-5 w-5" />} text={rtl ? "استبدال واسترجاع" : "Easy returns"} />
         </div>
+
+        <div className="mt-6 grid gap-3 rounded-[2rem] border border-border bg-card p-5">
+          <h2 className="text-lg font-bold">{rtl ? "لماذا تطلب من شوبلينا؟" : "Why order from Shoplina?"}</h2>
+          <div className="grid gap-3 text-sm text-muted-foreground md:grid-cols-3">
+            <TrustItem icon={<PackageCheck className="h-5 w-5" />} text={rtl ? "تأكيد الطلب خلال 24 ساعة" : "Confirmed within 24h"} />
+            <TrustItem icon={<ShieldCheck className="h-5 w-5" />} text={rtl ? "دفع آمن وخيارات متعددة" : "Secure payment options"} />
+            <TrustItem icon={<CheckCircle2 className="h-5 w-5" />} text={rtl ? "منتجات مختارة بعناية" : "Curated products"} />
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function PaymentMethodsPanel({
+  locale,
+  selected,
+  onSelect,
+}: {
+  locale: string;
+  selected: string;
+  onSelect: (value: string) => void;
+}) {
+  const rtl = locale === "ar";
+  const methods = getEnabledPaymentMethods();
+  const icons: Record<string, React.ReactNode> = {
+    cod: <Banknote className="h-5 w-5" />,
+    card: <CreditCard className="h-5 w-5" />,
+    "apple-pay": <Smartphone className="h-5 w-5" />,
+    "stc-pay": <WalletCards className="h-5 w-5" />,
+    installments: <Landmark className="h-5 w-5" />,
+  };
+
+  return (
+    <div className="mt-5 rounded-[2rem] border border-border bg-card p-5">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-bold">{rtl ? "اختر طريقة الدفع" : "Choose payment method"}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {rtl
+              ? "تظهر هنا فقط طرق الدفع التي تفعلها من إعدادات المتجر."
+              : "Only payment methods enabled from store settings appear here."}
+          </p>
+        </div>
+        <ShieldCheck className="h-7 w-7 text-accent" />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {methods.map((method) => (
+          <label key={method.id} className="cursor-pointer">
+            <input
+              type="radio"
+              name="paymentMethod"
+              value={method.id}
+              checked={selected === method.id}
+              onChange={() => onSelect(method.id)}
+              className="peer sr-only"
+            />
+            <span className="flex h-full gap-3 rounded-2xl border border-border bg-background p-4 transition peer-checked:border-accent peer-checked:bg-accent/10 peer-checked:ring-2 peer-checked:ring-accent/30">
+              <span className="mt-1 text-accent">{icons[method.id] ?? <CreditCard className="h-5 w-5" />}</span>
+              <span>
+                <span className="flex items-center gap-2 font-bold">
+                  {rtl ? method.labelAr : method.label}
+                  {method.recommended ? (
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                      {rtl ? "مفضل" : "Recommended"}
+                    </span>
+                  ) : null}
+                </span>
+                <span className="mt-1 block text-xs text-muted-foreground">
+                  {rtl ? method.descriptionAr : method.description}
+                </span>
+              </span>
+            </span>
+          </label>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -162,6 +259,7 @@ function QuickOrderForm({
   price,
   currency,
   countryCode,
+  paymentMethod,
   isSubmitting,
   setIsSubmitting,
   onFocus,
@@ -173,6 +271,7 @@ function QuickOrderForm({
   price: number;
   currency: string;
   countryCode: string;
+  paymentMethod: string;
   isSubmitting: boolean;
   setIsSubmitting: (value: boolean) => void;
   onFocus: () => void;
@@ -195,6 +294,7 @@ function QuickOrderForm({
       phone,
       city: String(formData.get("city") ?? ""),
       countryCode,
+      paymentMethod,
       color,
       size,
     };
@@ -234,7 +334,7 @@ function QuickOrderForm({
     >
       <div className="mb-4 flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold">{rtl ? "اطلب الآن - الدفع عند الاستلام" : "Order now - Cash on delivery"}</h2>
+          <h2 className="text-xl font-bold">{rtl ? "اطلب الآن" : "Order now"}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {rtl ? "املأ 3 حقول فقط وسيتصل بك فريقنا للتأكيد." : "Fill only 3 fields. Our team calls to confirm."}
           </p>

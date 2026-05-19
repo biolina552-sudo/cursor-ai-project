@@ -156,6 +156,44 @@ export async function StoreSettingsAdminPage({ locale }: { locale: string }) {
           </div>
         </div>
       </AdminPanel>
+      <AdminPanel title={locale === "ar" ? "طرق الدفع في المتجر" : "Store payment methods"}>
+        <div className="grid gap-4">
+          {storefrontSettings.paymentMethods.map((method) => (
+            <div
+              key={method.id}
+              className="grid gap-4 rounded-3xl border border-black/10 p-4 md:grid-cols-[auto_1fr_1fr_1fr_auto]"
+            >
+              <label className="flex items-center gap-2">
+                <input type="checkbox" defaultChecked={method.enabled} />
+                <span className="font-semibold">{locale === "ar" ? "مفعّل" : "Enabled"}</span>
+              </label>
+              <Input defaultValue={method.labelAr} placeholder={locale === "ar" ? "اسم الطريقة بالعربية" : "Arabic label"} />
+              <Input defaultValue={method.label} placeholder={locale === "ar" ? "اسم الطريقة بالإنجليزية" : "English label"} />
+              <Input defaultValue={method.id} placeholder="payment-method-id" />
+              <label className="flex items-center gap-2">
+                <input type="radio" name="recommended-payment" defaultChecked={method.recommended} />
+                <span>{locale === "ar" ? "مفضل" : "Recommended"}</span>
+              </label>
+            </div>
+          ))}
+          <div className="rounded-3xl bg-[#f7f4ed] p-4">
+            <h3 className="font-bold">
+              {locale === "ar" ? "إضافة طريقة دفع جديدة" : "Add new payment method"}
+            </h3>
+            <div className="mt-4 grid gap-4 md:grid-cols-4">
+              <Input placeholder={locale === "ar" ? "مثال: PayPal" : "Example: PayPal"} />
+              <Input placeholder={locale === "ar" ? "الاسم بالعربية" : "Arabic label"} />
+              <Input placeholder={locale === "ar" ? "رابط أو كود الربط" : "Gateway key / link"} />
+              <Button variant="gold">{copy.add}</Button>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-blue-50 p-4 text-sm text-blue-950">
+            {locale === "ar"
+              ? "هذه الواجهة تتيح لك تحديد طرق الدفع التي تظهر في صفحة المنتج. الربط الحقيقي مع بوابة الدفع يتم عبر مفاتيح Stripe أو بوابة محلية في ملفات البيئة."
+              : "This controls which payment methods appear on product pages. Real gateway integration is configured via Stripe/local gateway environment keys."}
+          </div>
+        </div>
+      </AdminPanel>
       <AdminPanel>
         <form className="grid gap-5 lg:grid-cols-2">
           <label className="grid gap-2 text-sm font-semibold">
